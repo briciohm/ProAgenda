@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="ProAgenda — sistema de agendamento para profissionais autônomos: tatuadores, eletricistas, bartenders e esteticistas.">
+<meta name="theme-color" content="#2563EB">
+<title>ProAgenda — Agenda para profissionais autônomos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+/* ============================================================
+   ProAgenda — Design System (unidades relativas em rem)
+   1. Variáveis  2. Reset  3. Tipografia  4. Botões
+   5. Formulários  6. Layout  7. Componentes  8. Responsivo
+   ============================================================ */
+:root{
+  /* Paleta extraída dos protótipos */
+  --pa-primary:#2563EB;
+  --pa-primary-dark:#1D4ED8;
+  --pa-primary-light:#3B82F6;
+  --pa-primary-soft:#DBEAFE;
+  --pa-bg:#F3F4F6;
+  --pa-surface:#FFFFFF;
+  --pa-text:#0F172A;
+  --pa-text-soft:#334155;
+  --pa-muted:#64748B;
+  --pa-border:#E2E8F0;
+  --pa-border-strong:#CBD5E1;
+  --pa-danger:#DC2626;
+  --pa-danger-dark:#B91C1C;
+  --pa-danger-soft:#FEF2F2;
+  --pa-success:#16A34A;
+  --pa-success-soft:#F0FDF4;
+  --pa-warning:#D97706;
+  --pa-warning-soft:#FFFBEB;
+  --pa-info-soft:#EFF6FF;
+
+  --pa-radius:0.75rem;          /* 12px */
+  --pa-radius-sm:0.5rem;
+  --pa-radius-lg:1rem;
+  --pa-shadow-sm:0 1px 2px rgba(15,23,42,.06);
+  --pa-shadow:0 6px 18px rgba(15,23,42,.08);
+  --pa-shadow-lg:0 24px 48px rgba(15,23,42,.18);
+  --pa-sidebar-w:15.5rem;
+  --pa-font:'Inter','Segoe UI',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;font-family:var(--pa-font);background:var(--pa-bg);color:var(--pa-text);
+  font-size:1rem;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+body h1,body h2,body h3,body h4{margin:0;font-weight:700;line-height:1.25;letter-spacing:-.012em}
+body p{margin:0}
+body ul,body ol{margin:0;padding:0;list-style:none}
+body button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+body input,body select,body textarea{font:inherit;color:inherit;margin:0}
+body a{color:inherit;text-decoration:none}
+body table{border-collapse:collapse;width:100%}
+body svg{display:block}
+body img{max-width:100%}
+:focus-visible{outline:.125rem solid var(--pa-primary);outline-offset:.125rem}
+::selection{background:var(--pa-primary-soft);color:var(--pa-primary-dark)}
+
+/* ---------- Tipografia utilitária ---------- */
+.t-xs{font-size:.6875rem}
+.t-sm{font-size:.8125rem}
+.t-base{font-size:.9375rem}
+.t-lg{font-size:1.0625rem}
+.t-xl{font-size:1.25rem}
+.t-2xl{font-size:1.5rem}
+.muted{color:var(--pa-muted)}
+.soft{color:var(--pa-text-soft)}
+.bold{font-weight:700}
+.semi{font-weight:600}
+.center{text-align:center}
+.right{text-align:right}
+.nowrap{white-space:nowrap}
+.upper{text-transform:uppercase;letter-spacing:.06em}
+.flex{display:flex}
+.between{justify-content:space-between}
+.center-y{align-items:center}
+.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}
+.wrap{flex-wrap:wrap}
+.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}
+.mt-5{margin-top:1.5rem}.mt-6{margin-top:2rem}
+.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}
+.w-full{width:100%}
+.hidden{display:none !important}
+.sr-only{position:absolute;width:.0625rem;height:.0625rem;padding:0;margin:-.0625rem;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---------- Marca / logo ---------- */
+.brand{display:flex;align-items:center;gap:.625rem}
+.brand-mark{width:2.375rem;height:2.375rem;border-radius:.75rem;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--pa-primary),#4F46E5);color:#fff;box-shadow:0 6px 14px rgba(37,99,235,.35);flex:none}
+.brand-name{font-weight:800;font-size:1.0625rem;letter-spacing:-.02em}
+.brand-name span{color:var(--pa-primary)}
+
+/* ============================================================
+   AUTENTICAÇÃO
+   ============================================================ */
+.auth-shell{display:grid;grid-template-columns:1.05fr .95fr;min-height:100vh}
+.auth-aside{background:linear-gradient(160deg,#1D4ED8 0%,#2563EB 55%,#3B82F6 100%);color:#fff;
+  padding:2.5rem;display:flex;flex-direction:column;justify-content:space-between;gap:2rem;position:relative;overflow:hidden}
+.auth-aside::before{content:"";position:absolute;width:30rem;height:30rem;border-radius:50%;background:rgba(255,255,255,.09);right:-10rem;top:-8rem}
+.auth-aside::after{content:"";position:absolute;width:22rem;height:22rem;border-radius:50%;background:rgba(255,255,255,.07);left:-9rem;bottom:-7rem}
+.auth-aside>*{position:relative;z-index:1}
+.auth-aside .brand-mark{background:rgba(255,255,255,.16);box-shadow:none;backdrop-filter:blur(4px)}
+.auth-headline{font-size:2.25rem;font-weight:800;line-height:1.15;letter-spacing:-.03em;max-width:26rem}
+.auth-sub{margin-top:1rem;color:rgba(255,255,255,.85);max-width:28rem;font-size:1rem}
+.auth-features{display:flex;flex-direction:column;gap:.875rem;margin-top:2rem}
+.auth-feature{display:flex;gap:.75rem;align-items:flex-start;font-size:.9375rem;color:rgba(255,255,255,.92)}
+.auth-feature i{flex:none;width:1.5rem;height:1.5rem;border-radius:.5rem;background:rgba(255,255,255,.18);display:grid;place-items:center}
+.auth-quote{border-left:.1875rem solid rgba(255,255,255,.45);padding-left:1rem;font-size:.9375rem;color:rgba(255,255,255,.92)}
+.auth-main{display:flex;align-items:center;justify-content:center;padding:2rem 1.25rem;background:var(--pa-bg)}
+.auth-card{width:100%;max-width:26rem;background:var(--pa-surface);border:1px solid var(--pa-border);
+  border-radius:var(--pa-radius-lg);box-shadow:var(--pa-shadow);padding:1.75rem}
+.auth-card h1{font-size:1.5rem}
+.divider{display:flex;align-items:center;gap:.75rem;color:var(--pa-muted);font-size:.8125rem;margin:1.25rem 0}
+.divider::before,.divider::after{content:"";height:1px;background:var(--pa-border);flex:1}
+.social-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.625rem}
+.social-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;border:1px solid var(--pa-border);
+  background:#fff;border-radius:.625rem;padding:.625rem .5rem;font-size:.8125rem;font-weight:600;color:var(--pa-text-soft);transition:.15s}
+.social-btn:hover{border-color:var(--pa-border-strong);background:#F8FAFC;transform:translateY(-.0625rem)}
+.link{color:var(--pa-primary);font-weight:600;font-size:.875rem}
+.link:hover{text-decoration:underline}
+
+/* Steps do fluxo de recuperação */
+.steps{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem}
+.step-dot{width:1.75rem;height:1.75rem;border-radius:50%;display:grid;place-items:center;font-size:.75rem;font-weight:700;
+  background:var(--pa-border);color:var(--pa-muted);flex:none}
+.step-dot.active{background:var(--pa-primary);color:#fff;box-shadow:0 0 0 .25rem var(--pa-primary-soft)}
+.step-dot.done{background:var(--pa-success);color:#fff}
+.step-line{flex:1;height:.125rem;background:var(--pa-border);border-radius:1rem}
+.step-line.done{background:var(--pa-success)}
+
+/* OTP */
+.otp-row{display:flex;gap:.625rem;justify-content:space-between}
+.otp-input{width:100%;max-width:3.5rem;height:3.5rem;text-align:center;font-size:1.5rem;font-weight:700;
+  border:1px solid var(--pa-border);border-radius:.75rem;background:#fff;transition:.15s}
+.otp-input:focus{outline:none;border-color:var(--pa-primary);box-shadow:0 0 0 .25rem rgba(37,99,235,.18)}
+.otp-input.error{border-color:var(--pa-danger);background:var(--pa-danger-soft)}
+.otp-input.filled{border-color:var(--pa-primary);background:var(--pa-primary-soft)}
+.resend{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-top:1rem;font-size:.8125rem;color:var(--pa-muted)}
+
+/* ============================================================
+   FORMULÁRIOS
+   ============================================================ */
+.field{display:flex;flex-direction:column;gap:.375rem;margin-bottom:1rem}
+.field>label{font-size:.875rem;font-weight:600;color:var(--pa-text-soft)}
+.req{color:var(--pa-danger)}
+.input,select.input,textarea.input{width:100%;border:1px solid var(--pa-border);background:#fff;border-radius:.625rem;
+  padding:.7rem .875rem;font-size:.9375rem;min-height:2.75rem;transition:border-color .15s,box-shadow .15s,background .15s}
+textarea.input{min-height:6rem;resize:vertical}
+.input::placeholder{color:#94A3B8}
+.input:focus{outline:none;border-color:var(--pa-primary);box-shadow:0 0 0 .25rem rgba(37,99,235,.16)}
+.input:disabled{background:#F8FAFC;color:var(--pa-muted)}
+.input.error{border-color:var(--pa-danger);background:var(--pa-danger-soft)}
+.input.error:focus{box-shadow:0 0 0 .25rem rgba(220,38,38,.15)}
+.input-wrap{position:relative}
+.input-wrap .input{padding-right:2.875rem}
+.icon-btn-input{position:absolute;right:.375rem;top:50%;transform:translateY(-50%);padding:.5rem;border-radius:.5rem;color:var(--pa-muted)}
+.icon-btn-input:hover{color:var(--pa-primary);background:var(--pa-primary-soft)}
+.error-msg{display:none;align-items:center;gap:.3125rem;color:var(--pa-danger);font-size:.8125rem;font-weight:500}
+.error-msg.show{display:flex}
+.hint{font-size:.8125rem;color:var(--pa-muted)}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 1.25rem}
+.form-grid .col-2{grid-column:1/-1}
+.alert{display:flex;gap:.625rem;align-items:flex-start;border-radius:.625rem;padding:.75rem .875rem;font-size:.875rem;margin-bottom:1rem}
+.alert-danger{background:var(--pa-danger-soft);color:#991B1B;border:1px solid #FECACA}
+.alert-success{background:var(--pa-success-soft);color:#14532D;border:1px solid #BBF7D0}
+.alert-info{background:var(--pa-info-soft);color:#1E40AF;border:1px solid #BFDBFE}
+.alert-warning{background:var(--pa-warning-soft);color:#92400E;border:1px solid #FDE68A}
+
+/* ============================================================
+   BOTÕES
+   ============================================================ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:.625rem;font-weight:600;
+  font-size:.9375rem;padding:.7rem 1.1rem;border:1px solid transparent;transition:transform .12s,background .15s,box-shadow .15s,color .15s,border-color .15s;white-space:nowrap}
+.btn:active{transform:translateY(.0625rem)}
+.btn-primary{background:var(--pa-primary);color:#fff;box-shadow:0 6px 14px rgba(37,99,235,.28)}
+.btn-primary:hover{background:var(--pa-primary-dark)}
+.btn-outline{background:#fff;border-color:var(--pa-border);color:var(--pa-text-soft)}
+.btn-outline:hover{border-color:var(--pa-primary);color:var(--pa-primary);background:var(--pa-primary-soft)}
+.btn-soft{background:var(--pa-primary-soft);color:var(--pa-primary-dark)}
+.btn-soft:hover{background:#BFDBFE}
+.btn-danger{background:var(--pa-danger);color:#fff;box-shadow:0 6px 14px rgba(220,38,38,.25)}
+.btn-danger:hover{background:var(--pa-danger-dark)}
+.btn-ghost{color:var(--pa-text-soft);background:transparent}
+.btn-ghost:hover{background:#E2E8F0}
+.btn-block{width:100%}
+.btn-sm{padding:.4rem .7rem;font-size:.8125rem;border-radius:.5rem}
+.icon-btn{width:2.5rem;height:2.5rem;border-radius:.625rem;display:grid;place-items:center;color:var(--pa-text-soft);transition:.15s}
+.icon-btn:hover{background:#EEF2F7;color:var(--pa-primary)}
+
+/* ============================================================
+   LAYOUT / SHELL
+   ============================================================ */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:var(--pa-sidebar-w);flex:none;background:var(--pa-surface);border-right:1px solid var(--pa-border);
+  position:fixed;top:0;bottom:0;left:0;z-index:45;display:flex;flex-direction:column;transition:transform .25s ease}
+.side-head{padding:1.25rem 1.25rem .75rem;border-bottom:1px solid var(--pa-border)}
+.user-card{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:#F8FAFC;border:1px solid var(--pa-border);border-radius:.75rem;margin-top:1rem}
+.avatar{width:2.5rem;height:2.5rem;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.875rem;
+  color:#fff;background:linear-gradient(140deg,var(--pa-success),#15803D);flex:none}
+.avatar-sm{width:2rem;height:2rem;font-size:.75rem}
+.avatar-lg{width:3.5rem;height:3.5rem;font-size:1.25rem}
+.side-nav{flex:1;overflow-y:auto;padding:1rem .75rem}
+.nav-title{font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;color:var(--pa-muted);padding:0 .5rem;margin:.5rem 0}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.625rem .75rem;border-radius:.625rem;color:var(--pa-text-soft);
+  font-size:.9375rem;font-weight:500;margin-bottom:.1875rem;transition:.15s;position:relative}
+.nav-item:hover{background:#F1F5F9;color:var(--pa-text)}
+.nav-item.active{background:var(--pa-primary-soft);color:var(--pa-primary-dark);font-weight:600}
+.nav-item i{display:grid;place-items:center;width:1.25rem;flex:none}
+.nav-badge{margin-left:auto;background:var(--pa-primary);color:#fff;font-size:.6875rem;font-weight:700;padding:.0625rem .4375rem;border-radius:999rem;min-width:1.375rem;text-align:center}
+.nav-item.active .nav-badge{background:var(--pa-primary-dark)}
+.side-foot{padding:.75rem;border-top:1px solid var(--pa-border)}
+.main{flex:1;min-width:0;margin-left:var(--pa-sidebar-w);display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--pa-border);padding:.75rem 1.25rem;display:flex;align-items:center;gap:.75rem}
+.hamburger{display:none}
+.search{position:relative;flex:1;max-width:26rem}
+.search input{width:100%;border:1px solid var(--pa-border);background:#F8FAFC;border-radius:.625rem;padding:.55rem .875rem .55rem 2.375rem;font-size:.875rem;min-height:2.5rem}
+.search input:focus{outline:none;background:#fff;border-color:var(--pa-primary);box-shadow:0 0 0 .25rem rgba(37,99,235,.14)}
+.search>svg{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--pa-muted);pointer-events:none}
+.search-results{position:absolute;top:calc(100% + .375rem);left:0;right:0;background:#fff;border:1px solid var(--pa-border);
+  border-radius:.75rem;box-shadow:var(--pa-shadow);padding:.375rem;z-index:40;max-height:20rem;overflow:auto}
+.search-item{display:flex;gap:.625rem;align-items:center;width:100%;padding:.5rem .625rem;border-radius:.5rem;text-align:left}
+.search-item:hover{background:#F1F5F9}
+.notif{position:relative}
+.notif-dot{position:absolute;top:.375rem;right:.375rem;width:.5rem;height:.5rem;background:var(--pa-danger);border:2px solid #fff;border-radius:50%}
+.dropdown{position:absolute;top:calc(100% + .5rem);right:0;width:20rem;max-width:90vw;background:#fff;border:1px solid var(--pa-border);
+  border-radius:.75rem;box-shadow:var(--pa-shadow);z-index:40;padding:.5rem}
+.notif-wrap{position:relative}
+.notif-item{display:flex;gap:.625rem;padding:.625rem;border-radius:.5rem;align-items:flex-start}
+.notif-item:hover{background:#F8FAFC}
+.content{padding:1.5rem 1.25rem 5rem;max-width:80rem;width:100%;margin:0 auto}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.page-title{font-size:1.5rem}
+.breadcrumb{display:flex;align-items:center;gap:.375rem;font-size:.8125rem;color:var(--pa-muted);margin-bottom:.5rem}
+.breadcrumb a:hover{color:var(--pa-primary)}
+
+/* Painéis / cards */
+.panel{background:var(--pa-surface);border:1px solid var(--pa-border);border-radius:var(--pa-radius);box-shadow:var(--pa-shadow-sm)}
+.panel-head{padding:1rem 1.125rem;border-bottom:1px solid var(--pa-border);display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+.panel-body{padding:1.125rem}
+.card{background:var(--pa-surface);border:1px solid var(--pa-border);border-radius:var(--pa-radius);box-shadow:var(--pa-shadow-sm);padding:1.125rem}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+.dash-grid{display:grid;grid-template-columns:minmax(0,1fr) 19.5rem;gap:1.25rem;align-items:start}
+.week-nav{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.week-range{font-weight:700;font-size:.9375rem;min-width:12.5rem;text-align:center;text-transform:capitalize}
+.day-strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem;padding:.875rem;border-bottom:1px solid var(--pa-border)}
+.day-item{border:1px solid var(--pa-border);background:#fff;border-radius:.75rem;padding:.5rem .25rem;text-align:center;transition:.15s}
+.day-item:hover{border-color:var(--pa-primary-light);background:var(--pa-info-soft)}
+.day-item .dow{font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em;color:var(--pa-muted);font-weight:700}
+.day-item .dnum{font-size:1.125rem;font-weight:700;margin-top:.125rem}
+.day-item .dcount{font-size:.6875rem;color:var(--pa-muted);margin-top:.125rem}
+.day-item.active{background:var(--pa-primary);border-color:var(--pa-primary);color:#fff;box-shadow:0 8px 18px rgba(37,99,235,.28)}
+.day-item.active .dow,.day-item.active .dcount{color:rgba(255,255,255,.85)}
+.day-item.today .dnum::after{content:"";display:inline-block;width:.3125rem;height:.3125rem;border-radius:50%;background:var(--pa-primary);margin-left:.1875rem;vertical-align:middle}
+.day-item.active.today .dnum::after{background:#fff}
+
+.timeline{display:flex;flex-direction:column}
+.tl-row{display:grid;grid-template-columns:4.25rem minmax(0,1fr);gap:.75rem;border-top:1px solid var(--pa-border)}
+.tl-row:first-child{border-top:0}
+.tl-time{padding:.875rem 0;font-size:.8125rem;font-weight:600;color:var(--pa-muted);text-align:right}
+.slot-area{padding:.375rem 0;display:flex;flex-direction:column;gap:.375rem;justify-content:center}
+.slot-free{width:100%;border:1px dashed var(--pa-border-strong);border-radius:.625rem;padding:.5rem .75rem;color:var(--pa-muted);
+  font-size:.8125rem;display:flex;align-items:center;gap:.5rem;background:#FAFBFC;transition:.15s;text-align:left}
+.slot-free:hover{border-color:var(--pa-primary);color:var(--pa-primary-dark);background:var(--pa-primary-soft)}
+.appt{display:flex;gap:.75rem;align-items:stretch;background:linear-gradient(135deg,var(--pa-primary),var(--pa-primary-light));
+  color:#fff;border-radius:.75rem;padding:.75rem .875rem;position:relative;box-shadow:0 8px 18px rgba(37,99,235,.24);text-align:left;width:100%}
+.appt:hover{box-shadow:0 12px 24px rgba(37,99,235,.32)}
+.appt-time{font-size:.8125rem;font-weight:700;background:rgba(255,255,255,.18);border-radius:.5rem;padding:.25rem .5rem;height:fit-content;white-space:nowrap}
+.appt-body{flex:1;min-width:0}
+.appt-name{font-weight:700;font-size:.9375rem}
+.appt-meta{font-size:.8125rem;color:rgba(255,255,255,.85);display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.appt-price{font-weight:700;font-size:.875rem;margin-left:auto;align-self:center;white-space:nowrap}
+.appt-menu-btn{position:absolute;top:.375rem;right:.375rem;color:rgba(255,255,255,.85);padding:.1875rem .375rem;border-radius:.375rem}
+.appt-menu-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.appt-menu{position:absolute;top:1.875rem;right:.375rem;background:#fff;border:1px solid var(--pa-border);border-radius:.5rem;
+  box-shadow:var(--pa-shadow);padding:.25rem;z-index:20;min-width:9.5rem}
+.appt-menu button{display:flex;align-items:center;gap:.5rem;width:100%;padding:.4375rem .5rem;border-radius:.375rem;font-size:.8125rem;color:var(--pa-text-soft)}
+.appt-menu button:hover{background:#F1F5F9}
+.appt-menu button.danger{color:var(--pa-danger)}
+.appt-menu button.danger:hover{background:var(--pa-danger-soft)}
+.appt-cancelled{background:#E2E8F0;color:var(--pa-muted);box-shadow:none}
+
+.metric{background:var(--pa-surface);border:1px solid var(--pa-border);border-radius:var(--pa-radius);box-shadow:var(--pa-shadow-sm);padding:1.125rem}
+.metric-label{font-size:.8125rem;color:var(--pa-muted);font-weight:600;display:flex;align-items:center;gap:.375rem}
+.metric-value{font-size:1.75rem;font-weight:800;letter-spacing:-.03em;margin-top:.25rem}
+.metric-value.primary{color:var(--pa-primary)}
+.metric-sub{font-size:.8125rem;color:var(--pa-muted);margin-top:.25rem}
+.summary-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.5rem 0;border-top:1px dashed var(--pa-border);font-size:.875rem}
+.summary-row:first-of-type{border-top:0}
+.next-box{background:var(--pa-primary-soft);border-radius:.625rem;padding:.75rem;margin-top:.75rem}
+.next-box .label{font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em;color:var(--pa-primary-dark);font-weight:700}
+
+/* ============================================================
+   LISTAGENS / TABELAS
+   ============================================================ */
+.toolbar{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem}
+.toolbar .input{max-width:20rem}
+.table-wrap{overflow-x:auto}
+th{text-align:left;font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em;color:var(--pa-muted);padding:.75rem 1rem;border-bottom:1px solid var(--pa-border);white-space:nowrap}
+td{padding:.875rem 1rem;border-bottom:1px solid var(--pa-border);font-size:.875rem;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#F8FAFC}
+.badge{display:inline-flex;align-items:center;gap:.3125rem;font-size:.75rem;font-weight:700;padding:.1875rem .5rem;border-radius:999rem}
+.badge-blue{background:var(--pa-primary-soft);color:var(--pa-primary-dark)}
+.badge-green{background:var(--pa-success-soft);color:#15803D}
+.badge-gray{background:#F1F5F9;color:var(--pa-text-soft)}
+.badge-red{background:var(--pa-danger-soft);color:var(--pa-danger-dark)}
+.client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(17.5rem,1fr));gap:1rem}
+.client-card{background:#fff;border:1px solid var(--pa-border);border-radius:var(--pa-radius);padding:1rem;box-shadow:var(--pa-shadow-sm);display:flex;flex-direction:column;gap:.75rem}
+.empty-state{text-align:center;padding:3rem 1.5rem;color:var(--pa-muted)}
+.empty-state h3{color:var(--pa-text);font-size:1.0625rem;margin-bottom:.375rem}
+
+/* ============================================================
+   AGENDAMENTO (form + edição)
+   ============================================================ */
+.split{display:grid;grid-template-columns:20rem minmax(0,1fr);gap:1.25rem;align-items:start}
+.summary-box{background:linear-gradient(150deg,#EFF6FF,#F8FAFC);border:1px solid #DBEAFE;border-radius:var(--pa-radius);padding:1.125rem}
+.summary-row-s{display:flex;justify-content:space-between;gap:.75rem;padding:.5rem 0;font-size:.875rem;border-bottom:1px dashed #DBEAFE}
+.summary-row-s:last-of-type{border-bottom:0}
+.summary-row-s .k{color:var(--pa-muted)}
+.summary-row-s .v{font-weight:600;text-align:right}
+.danger-zone{border:1px solid #FECACA;background:var(--pa-danger-soft);border-radius:var(--pa-radius);padding:1rem}
+.danger-zone h4{color:#991B1B;font-size:.9375rem;display:flex;align-items:center;gap:.375rem}
+
+/* ============================================================
+   MODAL / TOAST / ACESSIBILIDADE
+   ============================================================ */
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(3px);z-index:70;display:flex;
+  align-items:center;justify-content:center;padding:1.25rem;animation:fadeIn .16s ease}
+.modal{background:#fff;border-radius:var(--pa-radius-lg);max-width:31rem;width:100%;box-shadow:var(--pa-shadow-lg);
+  padding:1.5rem;animation:popIn .18s ease;max-height:90vh;overflow:auto}
+.modal h3{font-size:1.125rem;margin-bottom:.5rem}
+.modal-actions{display:flex;gap:.625rem;justify-content:flex-end;margin-top:1.25rem;flex-wrap:wrap}
+.toast-host{position:fixed;top:1rem;right:1rem;z-index:90;display:flex;flex-direction:column;gap:.5rem;max-width:min(22rem,90vw)}
+.toast{display:flex;gap:.625rem;align-items:flex-start;background:#0F172A;color:#fff;padding:.75rem .875rem;border-radius:.625rem;
+  box-shadow:var(--pa-shadow);font-size:.875rem;animation:slideIn .2s ease}
+.toast.success{background:#14532D}
+.toast.error{background:#7F1D1D}
+.toast.warn{background:#78350F}
+.a11y{position:fixed;left:1rem;bottom:1rem;z-index:46;display:flex;align-items:center;gap:.1875rem;background:#fff;
+  border:1px solid var(--pa-border);border-radius:999rem;padding:.25rem;box-shadow:var(--pa-shadow)}
+.a11y button{width:2.25rem;height:2.25rem;border-radius:999px;font-weight:700;color:var(--pa-text-soft);font-size:.875rem;transition:.15s}
+.a11y button:hover{background:var(--pa-primary-soft);color:var(--pa-primary-dark)}
+.a11y .sep{width:1px;height:1.25rem;background:var(--pa-border);margin:0 .125rem}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:44;background:#fff;border-top:1px solid var(--pa-border);
+  display:none;padding:.375rem .25rem calc(.375rem + env(safe-area-inset-bottom));box-shadow:0 -4px 14px rgba(15,23,42,.05)}
+.bn-item{display:flex;flex-direction:column;align-items:center;gap:.125rem;padding:.375rem .25rem;color:var(--pa-muted);font-size:.625rem;font-weight:600;border-radius:.5rem;position:relative}
+.bn-item.active{color:var(--pa-primary)}
+.bn-item .bn-badge{position:absolute;top:.125rem;right:calc(50% - 1.25rem);background:var(--pa-danger);color:#fff;font-size:.5625rem;
+  font-weight:700;min-width:.875rem;height:.875rem;border-radius:999rem;display:grid;place-items:center;padding:0 .1875rem}
+.drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:44;display:none}
+.sr-live{position:absolute;width:.0625rem;height:.0625rem;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(.75rem) scale(.98)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(1rem)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
+/* ============================================================
+   RESPONSIVO (breakpoints em px para não variarem com a fonte)
+   ============================================================ */
+@media (max-width:1100px){
+  .dash-grid{grid-template-columns:minmax(0,1fr)}
+  .split{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:900px){
+  .auth-shell{grid-template-columns:minmax(0,1fr)}
+  .auth-aside{display:none}
+}
+@media (max-width:768px){
+  .sidebar{transform:translateX(-100%);box-shadow:var(--pa-shadow-lg)}
+  .sidebar.open{transform:none}
+  .drawer-backdrop.show{display:block}
+  .main{margin-left:0}
+  .hamburger{display:grid}
+  .bottom-nav{display:grid;grid-template-columns:repeat(5,1fr)}
+  .content{padding:1rem .875rem 6rem}
+  .form-grid{grid-template-columns:minmax(0,1fr)}
+  .topbar{padding:.625rem .875rem}
+  .search{max-width:none}
+  .a11y{left:auto;right:.75rem;bottom:5.5rem}
+  .page-title{font-size:1.25rem}
+  .week-range{min-width:100%;order:-1;text-align:left}
+  .day-strip{gap:.25rem;padding:.625rem .5rem}
+  .day-item .dow{font-size:.625rem}
+  .tl-row{grid-template-columns:3.25rem minmax(0,1fr);gap:.5rem}
+  .metric-value{font-size:1.5rem}
+  .hide-sm{display:none !important}
+  .toast-host{left:.75rem;right:.75rem;max-width:none}
+}
+@media (max-width:420px){
+  .otp-row{gap:.375rem}
+  .otp-input{height:3rem;font-size:1.25rem}
+}
+</style>
+</head>
+<body>
+  <!-- Barra de acessibilidade flutuante (fonte em rem + persistência) -->
+  <div class="a11y" role="toolbar" aria-label="Controles de acessibilidade" id="a11yBar">
+    <button type="button" data-font="down" aria-label="Diminuir o tamanho da fonte" title="Diminuir fonte (A-)">A-</button>
+    <button type="button" data-font="reset" aria-label="Restaurar o tamanho padrão da fonte" title="Restaurar fonte (A)">A</button>
+    <button type="button" data-font="up" aria-label="Aumentar o tamanho da fonte" title="Aumentar fonte (A+)">A+</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button type="button" data-action="open-a11y-info" aria-label="Informações sobre acessibilidade" title="Sobre a acessibilidade">
+      <svg width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    </button>
+  </div>
+
+  <!-- Container de renderização das telas (roteador SPA) -->
+  <div id="root"></div>
+
+  <!-- Toasts (feedback) -->
+  <div class="toast-host" id="toastHost" role="status" aria-live="polite"></div>
+
+  <!-- Modais -->
+  <div id="modalHost"></div>
+  <div class="sr-live" id="srLive" aria-live="polite"></div>
+
+<script>
+/* ============================================================================
+   ProAgenda — Front-end Vanilla JS
+   ---------------------------------------------------------------------------
+   Organização (equivalente aos arquivos sugeridos no projeto):
+     • js/api.js            -> camada HTTP (mock server + fetch real opcional)
+     • js/validators.js     -> máscaras e validações
+     • js/auth.js           -> sessão, login e código OTP
+     • js/agenda.js         -> render do calendário, receita e modais
+     • js/accessibility.js  -> A+ / A- com localStorage
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1) UTILITÁRIOS GERAIS
+   --------------------------------------------------------------------------- */
+const $  = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+const pad = n => String(n).padStart(2, '0');
+const uid = p => p + '_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+const delay = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+
+function dateKey(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function parseKey(k){ const [y,m,d] = k.split('-').map(Number); return new Date(y, m-1, d); }
+function addDays(d, n){ const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate()+n); return x; }
+function startOfWeek(d){ const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); const off = (x.getDay()+6)%7; x.setDate(x.getDate()-off); return x; }
+function toMinutes(hhmm){ const [h,m] = hhmm.split(':').map(Number); return h*60 + (m||0); }
+function fromMinutes(min){ return `${pad(Math.floor(min/60))}:${pad(min%60)}`; }
+function fmtMoney(v){ return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function fmtDateBR(k){ return parseKey(k).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+function fmtDateLong(d){ return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}); }
+function fmtWeekday(d, short){ const s = d.toLocaleDateString('pt-BR',{weekday:short?'short':'long'}); return s.replace('.',''); }
+function initials(name){ return String(name||'?').trim().split(/\s+/).slice(0,2).map(p=>p[0]||'').join('').toUpperCase(); }
+function monthName(d){ return d.toLocaleDateString('pt-BR',{month:'long'}); }
+
+/* ---------------------------------------------------------------------------
+   2) VALIDATORS (js/validators.js)
+   --------------------------------------------------------------------------- */
+const validators = {
+  email(v){ return /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(String(v||'').trim()); },
+  phone(v){ return String(v||'').replace(/\D/g,'').length >= 10; },
+  password(v){ return String(v||'').length >= 6; },
+  notEmpty(v){ return String(v||'').trim().length > 0; }
+};
+
+function maskPhone(value){
+  let v = String(value||'').replace(/\D/g,'').slice(0,11);
+  if(v.length > 6)  return `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  if(v.length > 2)  return `(${v.slice(0,2)}) ${v.slice(2)}`;
+  if(v.length > 0)  return `(${v}`;
+  return '';
+}
+function maskMoney(value){
+  let v = String(value||'').replace(/[^\d,.]/g,'');
+  v = v.replace(/\./g,'').replace(',','.');
+  const n = parseFloat(v);
+  if(isNaN(n)) return '';
+  return n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function parseMoney(value){
+  const n = parseFloat(String(value||'').replace(/[^\d,.]/g,'').replace(/\./g,'').replace(',','.'));
+  return isNaN(n) ? 0 : n;
+}
+
+/* ---------------------------------------------------------------------------
+   3) MOCK SERVER (equivalente ao back-end Node.js / Express)
+      Implementa as rotas REST pedidas no relatório.
+      Para produção basta definir API_BASE e USE_MOCK = false.
+   --------------------------------------------------------------------------- */
+const API_BASE = '';                 // ex.: 'http://localhost:3000'
+const USE_MOCK  = true;              // false = usa fetch real
+const DB_KEY    = 'pa_db_v1';
+const SESSION_KEY = 'pa_session_v1';
+const FONT_KEY  = 'pa_font_size';
+
+/* --- Seed do banco de demonstração --- */
+function seedDatabase(){
+  const base = startOfWeek(new Date());
+  const services = [
+    { id:'s1', name:'Tatuagem personalizada',  duration:120, price:450, category:'Tatuagem' },
+    { id:'s2', name:'Piercing',                duration:30,  price:80,  category:'Tatuagem' },
+    { id:'s3', name:'Manutenção elétrica',     duration:90,  price:180, category:'Eletricista' },
+    { id:'s4', name:'Instalação de chuveiro',  duration:60,  price:150, category:'Eletricista' },
+    { id:'s5', name:'Bartender para evento',    duration:180, price:350, category:'Bartender' },
+    { id:'s6', name:'Limpeza de pele',         duration:60,  price:160, category:'Esteticista' },
+    { id:'s7', name:'Design de sobrancelha',   duration:45,  price:70,  category:'Esteticista' },
+    { id:'s8', name:'Massagem relaxante',      duration:60,  price:140, category:'Esteticista' }
+  ];
+  const clients = [
+    { id:'c1', name:'Mariana Alves',   phone:'(11) 98812-4477', email:'mariana.alves@email.com', notes:'Prefere atendimento no período da tarde.' },
+    { id:'c2', name:'Rafael Nogueira', phone:'(21) 99640-1123', email:'rafael.nogueira@email.com', notes:'Cliente desde 2023.' },
+    { id:'c3', name:'Juliana Prado',   phone:'(31) 98155-2087', email:'juliana.prado@email.com', notes:'' },
+    { id:'c4', name:'Diego Ferraz',    phone:'(48) 99210-7745', email:'diego.ferraz@email.com', notes:'Indicação de amigo.' },
+    { id:'c5', name:'Camila Bastos',   phone:'(11) 98003-6612', email:'camila.bastos@email.com', notes:'' },
+    { id:'c6', name:'Bruno Tavares',   phone:'(85) 98774-3301', email:'bruno.tavares@email.com', notes:'Fatura para empresa.' }
+  ];
+  const mk = (day, sh, sm, eh, em, clientId, serviceId, notes) => {
+    const s = services.find(x => x.id === serviceId);
+    const d = addDays(base, day);
+    return {
+      id: uid('ag'),
+      date: dateKey(d),
+      start: `${pad(sh)}:${pad(sm)}`,
+      end: `${pad(eh)}:${pad(em)}`,
+      clientId, serviceId,
+      price: s.price,
+      status: 'confirmado',
+      notes: notes || ''
+    };
+  };
+  const appointments = [
+    mk(0, 9, 0, 11, 0, 'c1', 's1', 'Projeto floral no antebraço.'),
+    mk(0, 14, 0, 14, 30, 'c3', 's2'),
+    mk(1, 10, 0, 11, 0, 'c3', 's6'),
+    mk(1, 13, 30, 15, 0, 'c4', 's3', 'Quadro elétrico da cozinha.'),
+    mk(2, 9, 0, 9, 45, 'c5', 's7'),
+    mk(2, 15, 0, 18, 0, 'c6', 's5', 'Coquetel para 30 pessoas.'),
+    mk(3, 11, 0, 12, 0, 'c2', 's8'),
+    mk(3, 16, 0, 18, 0, 'c1', 's1'),
+    mk(4, 10, 0, 11, 0, 'c4', 's4'),
+    mk(5, 9, 0, 9, 30, 'c2', 's2'),
+    mk(7, 10, 0, 12, 0, 'c5', 's1'),
+    mk(9, 14, 0, 15, 30, 'c6', 's3')
+  ];
+  return { services, clients, appointments, users:[
+    { id:'u1', name:'Ana Ribeiro', role:'Tatuadora & Piercer', email:'ana@proagenda.com', password:'123456' }
+  ]};
+}
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    if(raw){
+      const db = JSON.parse(raw);
+      if(db && db.services && db.clients && db.appointments) return db;
+    }
+  }catch(e){ /* ignora storage inválido */ }
+  const db = seedDatabase();
+  saveDB(db);
+  return db;
+}
+function saveDB(db){
+  try{ localStorage.setItem(DB_KEY, JSON.stringify(db)); }catch(e){}
+}
+let DB = loadDB();
+
+/* --- Motor de rotas do mock (equivale a controllers Express) --- */
+const mockServer = {
+  'POST /api/login'({ body }){
+    const user = DB.users.find(u => u.email.toLowerCase() === String(body.email||'').trim().toLowerCase());
+    if(!user) throw { status:401, message:'E-mail não encontrado. Verifique os dados e tente novamente.' };
+    if(user.password !== body.password) throw { status:401, message:'Senha incorreta. Verifique e tente novamente.' };
+    return { token: 'pa_' + uid('tok'), user: { id:user.id, name:user.name, role:user.role, email:user.email } };
+  },
+  'POST /api/auth/reset-code'({ body }){
+    const email = String(body.email||'').trim();
+    if(!validators.email(email)) throw { status:400, message:'Informe um e-mail válido.' };
+    const code = String(Math.floor(1000 + Math.random()*9000));
+    mockServer._code = { email, code, expires: Date.now() + 5*60*1000 };
+    return { sent:true, expiresIn:300, demoCode:code };
+  },
+  'POST /api/auth/verify-code'({ body }){
+    const rec = mockServer._code;
+    if(!rec || rec.email !== String(body.email||'').trim() || rec.code !== String(body.code||''))
+      throw { status:400, message:'Código inválido ou expirado. Solicite um novo código.' };
+    if(Date.now() > rec.expires) throw { status:400, message:'Código expirado. Solicite um novo código.' };
+    return { valid:true };
+  },
+  'POST /api/auth/reset-password'({ body }){
+    if(!validators.password(body.password)) throw { status:400, message:'A senha deve ter no mínimo 6 caracteres.' };
+    if(body.password !== body.confirmation) throw { status:400, message:'As senhas não conferem.' };
+    const user = DB.users.find(u => u.email === body.email);
+    if(user) user.password = body.password;
+    saveDB(DB);
+    return { updated:true };
+  },
+  'POST /api/auth/register'({ body }){
+    if(!validators.notEmpty(body.name)) throw { status:400, message:'Informe seu nome completo.' };
+    if(!validators.email(body.email)) throw { status:400, message:'Informe um e-mail válido.' };
+    if(DB.users.some(u => u.email === body.email)) throw { status:409, message:'Este e-mail já está cadastrado.' };
+    if(!validators.password(body.password)) throw { status:400, message:'A senha deve ter no mínimo 6 caracteres.' };
+    const user = { id: uid('u'), name:body.name, role: body.role || 'Profissional autônomo', email:body.email, password:body.password };
+    DB.users.push(user); saveDB(DB);
+    return { token:'pa_' + uid('tok'), user:{ id:user.id, name:user.name, role:user.role, email:user.email } };
+  },
+  'GET /api/agendamentos'({ query }){
+    const inicio = query.get('inicio'), fim = query.get('fim');
+    let list = DB.appointments.slice();
+    if(inicio) list = list.filter(a => a.date >= inicio);
+    if(fim)   list = list.filter(a => a.date <= fim);
+    return list.map(a => ({ ...a, client: DB.clients.find(c => c.id === a.clientId) || null,
+                            service: DB.services.find(s => s.id === a.serviceId) || null }));
+  },
+  'POST /api/agendamentos'({ body }){
+    const conflict = DB.appointments.find(a => a.status !== 'cancelado' && a.date === body.date &&
+      toMinutes(body.start) < toMinutes(a.end) && toMinutes(body.end) > toMinutes(a.start));
+    if(conflict) throw { status:409, message:`Conflito de horário: já existe um agendamento das ${conflict.start} às ${conflict.end} nesta data.` };
+    const svc = DB.services.find(s => s.id === body.serviceId);
+    const item = {
+      id: uid('ag'), date: body.date, start: body.start, end: body.end,
+      clientId: body.clientId || null, clientName: body.clientName || '',
+      serviceId: body.serviceId, price: body.price != null ? Number(body.price) : (svc ? svc.price : 0),
+      status: 'confirmado', notes: body.notes || ''
+    };
+    DB.appointments.push(item); saveDB(DB);
+    return item;
+  },
+  'PUT /api/agendamentos/:id'({ body, params }){
+    const ap = DB.appointments.find(a => a.id === params.id);
+    if(!ap) throw { status:404, message:'Agendamento não encontrado.' };
+    const conflict = DB.appointments.find(a => a.id !== params.id && a.status !== 'cancelado' && a.date === body.date &&
+      toMinutes(body.start) < toMinutes(a.end) && toMinutes(body.end) > toMinutes(a.start));
+    if(conflict) throw { status:409, message:`Conflito de horário: já existe um agendamento das ${conflict.start} às ${conflict.end} nesta data.` };
+    Object.assign(ap, { date:body.date, start:body.start, end:body.end, serviceId:body.serviceId,
+      price: body.price != null ? Number(body.price) : ap.price, clientId: body.clientId || ap.clientId,
+      clientName: body.clientName || ap.clientName, notes: body.notes || ap.notes, status: body.status || ap.status });
+    saveDB(DB);
+    return ap;
+  },
+  'PATCH /api/agendamentos/:id/status'({ body, params }){
+    const ap = DB.appointments.find(a => a.id === params.id);
+    if(!ap) throw { status:404, message:'Agendamento não encontrado.' };
+    ap.status = body.status; saveDB(DB);
+    return ap;
+  },
+  'DELETE /api/agendamentos/:id'({ params }){
+    const idx = DB.appointments.findIndex(a => a.id === params.id);
+    if(idx < 0) throw { status:404, message:'Agendamento não encontrado.' };
+    DB.appointments.splice(idx,1); saveDB(DB);
+    return { deleted:true };
+  },
+  'GET /api/clientes'({ query }){
+    const q = (query.get('q')||'').toLowerCase();
+    let list = DB.clients.slice();
+    if(q) list = list.filter(c => (c.name+' '+c.phone+' '+(c.email||'')).toLowerCase().includes(q));
+    return list.map(c => {
+      const aps = DB.appointments.filter(a => a.clientId === c.id);
+      return { ...c, total: aps.length, last: aps.length ? aps.map(a=>a.date).sort().reverse()[0] : null };
+    });
+  },
+  'POST /api/clientes'({ body }){
+    if(!validators.notEmpty(body.name)) throw { status:400, message:'Informe o nome do cliente.' };
+    if(!validators.phone(body.phone)) throw { status:400, message:'Informe um telefone válido.' };
+    const c = { id: uid('c'), name:body.name, phone:body.phone, email:body.email||'', notes:body.notes||'' };
+    DB.clients.push(c); saveDB(DB);
+    return c;
+  },
+  'PUT /api/clientes/:id'({ body, params }){
+    const c = DB.clients.find(x => x.id === params.id);
+    if(!c) throw { status:404, message:'Cliente não encontrado.' };
+    Object.assign(c, { name:body.name, phone:body.phone, email:body.email||'', notes:body.notes||'' });
+    saveDB(DB);
+    return c;
+  },
+  'DELETE /api/clientes/:id'({ params }){
+    const idx = DB.clients.findIndex(c => c.id === params.id);
+    if(idx < 0) throw { status:404, message:'Cliente não encontrado.' };
+    DB.clients.splice(idx,1); saveDB(DB);
+    return { deleted:true };
+  },
+  'GET /api/servicos'(){ return DB.services.slice(); },
+  'POST /api/servicos'({ body }){
+    if(!validators.notEmpty(body.name)) throw { status:400, message:'Informe o nome do serviço.' };
+    const s = { id: uid('s'), name:body.name, duration:Number(body.duration)||60, price:Number(body.price)||0, category:body.category||'Geral' };
+    DB.services.push(s); saveDB(DB);
+    return s;
+  },
+  'PUT /api/servicos/:id'({ body, params }){
+    const s = DB.services.find(x => x.id === params.id);
+    if(!s) throw { status:404, message:'Serviço não encontrado.' };
+    Object.assign(s, { name:body.name, duration:Number(body.duration)||60, price:Number(body.price)||0, category:body.category||s.category });
+    saveDB(DB);
+    return s;
+  },
+  'DELETE /api/servicos/:id'({ params }){
+    const used = DB.appointments.filter(a => a.serviceId === params.id).length;
+    if(used) throw { status:409, message:`Este serviço está vinculado a ${used} agendamento(s) e não pode ser excluído.` };
+    const idx = DB.services.findIndex(s => s.id === params.id);
+    if(idx < 0) throw { status:404, message:'Serviço não encontrado.' };
+    DB.services.splice(idx,1); saveDB(DB);
+    return { deleted:true };
+  }
+};
+
+/* --- Cliente HTTP (js/api.js) --- */
+async function apiRequest(method, path, body){
+  await delay(180 + Math.random()*220);           // latência simulada de rede
+  if(!USE_MOCK){
+    const res = await fetch(API_BASE + path, {
+      method,
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + (session?.token || '') },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok) throw { status:res.status, message:data.message || 'Erro ao executar a operação.' };
+    return data;
+  }
+  // roteamento do mock server (suporta /api/agendamentos/:id e /:id/status)
+  const qIdx = path.indexOf('?');
+  const rawPath = qIdx >= 0 ? path.slice(0, qIdx) : path;
+  const query = new URLSearchParams(qIdx >= 0 ? path.slice(qIdx + 1) : '');
+  const key = `${method} ${rawPath}`;
+  for(const route of Object.keys(mockServer)){
+    if(typeof mockServer[route] !== 'function') continue;
+    const [verb, pattern] = route.split(' ');
+    if(verb !== method) continue;
+    const regex = new RegExp('^' + pattern.replace(/:([A-Za-z0-9_]+)/g, '(?<$1>[^/]+)') + '$');
+    const match = rawPath.match(regex);
+    if(match) return mockServer[route]({ body, query, params: match.groups || {} });
+  }
+  throw { status:404, message:'Recurso não encontrado (' + key + ').' };
+}
+const api = {
+  login:            (b) => apiRequest('POST','/api/login',b),
+  register:         (b) => apiRequest('POST','/api/auth/register',b),
+  requestResetCode: (b) => apiRequest('POST','/api/auth/reset-code',b),
+  verifyCode:       (b) => apiRequest('POST','/api/auth/verify-code',b),
+  resetPassword:    (b) => apiRequest('POST','/api/auth/reset-password',b),
+  listAppointments: (i,f) => apiRequest('GET','/api/agendamentos?inicio='+i+'&fim='+f),
+  createAppt:       (b) => apiRequest('POST','/api/agendamentos',b),
+  updateAppt:       (id,b) => apiRequest('PUT','/api/agendamentos/'+id,b),
+  setApptStatus:    (id,status) => apiRequest('PATCH','/api/agendamentos/'+id+'/status',{ status }),
+  deleteAppt:       (id) => apiRequest('DELETE','/api/agendamentos/'+id),
+  listClients:      (q) => apiRequest('GET','/api/clientes?q='+encodeURIComponent(q||'')),
+  createClient:     (b) => apiRequest('POST','/api/clientes',b),
+  updateClient:     (id,b) => apiRequest('PUT','/api/clientes/'+id,b),
+  deleteClient:     (id) => apiRequest('DELETE','/api/clientes/'+id),
+  listServices:     () => apiRequest('GET','/api/servicos'),
+  createService:    (b) => apiRequest('POST','/api/servicos',b),
+  updateService:    (id,b) => apiRequest('PUT','/api/servicos/'+id,b),
+  deleteService:    (id) => apiRequest('DELETE','/api/servicos/'+id)
+};
+
+/* ---------------------------------------------------------------------------
+   4) SESSÃO (js/auth.js)
+   --------------------------------------------------------------------------- */
+let session = null;
+try{ session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }catch(e){}
+function setSession(s){ session = s; s ? localStorage.setItem(SESSION_KEY, JSON.stringify(s)) : localStorage.removeItem(SESSION_KEY); }
+
+/* ---------------------------------------------------------------------------
+   5) ESTADO GLOBAL DA APLICAÇÃO
+   --------------------------------------------------------------------------- */
+const state = {
+  route:'/login',
+  params:new URLSearchParams(),
+  weekStart: startOfWeek(new Date()),
+  selectedDay: dateKey(new Date()),
+  search:'',
+  searchFocused:false,
+  editingId:null,
+  clientQuery:'',
+  recover:{ step:1, email:'', code:'', countdown:0, timer:null },
+  drawerOpen:false
+};
+
+/* ---------------------------------------------------------------------------
+   6) TOASTS E MODAIS
+   --------------------------------------------------------------------------- */
+function toast(message, type = 'success'){
+  const host = $('#toastHost');
+  const icons = {
+    success:'<path d="M20 6 9 17l-5-5"/>',
+    error:'<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/>',
+    warn:'<path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>'
+  };
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<svg width="1.125rem" height="1.125rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${icons[type]||icons.success}</svg><span>${esc(message)}</span>`;
+  host.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .25s'; setTimeout(()=>el.remove(), 260); }, 3600);
+}
+function closeModal(){ $('#modalHost').innerHTML = ''; document.body.style.overflow = ''; }
+function openModal({ title, body, actions = '' }){
+  const host = $('#modalHost');
+  host.innerHTML = `
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+        <h3>${title}</h3>
+        <div class="modal-content">${body}</div>
+        ${actions ? `<div class="modal-actions">${actions}</div>` : ''}
+      </div>
+    </div>`;
+  document.body.style.overflow = 'hidden';
+  const focusable = host.querySelector('button, input, select');
+  if(focusable) setTimeout(()=>focusable.focus(), 40);
+}
+
+/* ---------------------------------------------------------------------------
+   7) ACESSIBILIDADE — A+ / A- / A (js/accessibility.js)
+      Altera apenas o font-size da tag raiz <html>, escalando todo o layout.
+   --------------------------------------------------------------------------- */
+const FONT_STEPS = [16, 17.5, 19, 20.5, 22, 23.5];
+function applyFontSize(px){
+  document.documentElement.style.fontSize = px + 'px';
+  localStorage.setItem(FONT_KEY, String(px));
+  const live = $('#srLive');
+  if(live) live.textContent = 'Tamanho da fonte ajustado para ' + Math.round(px/16*100) + ' por cento.';
+}
+function initFontSize(){
+  const saved = parseFloat(localStorage.getItem(FONT_KEY) || '16');
+  document.documentElement.style.fontSize = (saved || 16) + 'px';
+}
+function changeFontSize(dir){
+  const cur = parseFloat(document.documentElement.style.fontSize || '16');
+  let idx = FONT_STEPS.findIndex(v => Math.abs(v - cur) < .01);
+  if(idx < 0) idx = 0;
+  idx = clamp(idx + dir, 0, FONT_STEPS.length - 1);
+  applyFontSize(FONT_STEPS[idx]);
+}
+
+/* ---------------------------------------------------------------------------
+   8) ÍCONES (SVG inline — assets/img no projeto real)
+   --------------------------------------------------------------------------- */
+const ICONS = {
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>',
+  tag:'<path d="M20.6 13.4 12 22l-9-9V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.2"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>',
+  bell:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  left:'<path d="m15 18-6-6 6-6"/>',
+  right:'<path d="m9 18 6-6-6-6"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  eyeOff:'<path d="M10.6 6.2A9.9 9.9 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-2.4 3.2M6.6 6.6A17 17 0 0 0 2 12s3.5 6 10 6c1.5 0 2.8-.3 4-.8"/><path d="m2 2 20 20"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+  dots:'<circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  menu:'<path d="M3 6h18M3 12h18M3 18h18"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>',
+  money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
+  warning:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>',
+  chevron:'<path d="m6 9 6 6 6-6"/>',
+  whatsapp:'<path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.8-5.2A8.5 8.5 0 1 1 21 11.5Z"/>',
+  arrowLeft:'<path d="M19 12H5M12 19l-7-7 7-7"/>'
+};
+const icon = (name, size = '1.125rem', cls = '') =>
+  `<svg class="${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]||''}</svg>`;
+
+/* ============================================================================
+   VIEWS (telas) — js/agenda.js
+   ============================================================================ */
+
+/* ---------- helpers de dados ---------- */
+function enrich(a){
+  return {
+    ...a,
+    client: DB.clients.find(c => c.id === a.clientId) || null,
+    service: DB.services.find(s => s.id === a.serviceId) || null
+  };
+}
+const HOURS = [7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+const DOW = ['Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+/* ============================================================================
+   SHELL (sidebar + topbar + bottom nav)
+   ============================================================================ */
+function shell(active, content){
+  const u = session?.user || { name:'Visitante', role:'' };
+  const badge = DB.appointments.filter(a => a.status !== 'cancelado').length;
+  const navItem = (id, label, iconName, href, withBadge) => `
+    <a class="nav-item ${active===id?'active':''}" href="${href}" ${active===id?'aria-current="page"':''}>
+      <i>${icon(iconName,'1.125rem')}</i><span>${label}</span>
+      ${withBadge?`<span class="nav-badge">${badge}</span>`:''}
+    </a>`;
+  return `
+  <div class="shell">
+    <aside class="sidebar ${state.drawerOpen?'open':''}" id="sidebar" aria-label="Navegação principal">
+      <div class="side-head">
+        <a class="brand" href="#/dashboard">
+          <span class="brand-mark">${icon('calendar','1.25rem')}</span>
+          <span class="brand-name">Pro<span>Agenda</span></span>
+        </a>
+        <div class="user-card">
+          <span class="avatar" aria-hidden="true">${esc(initials(u.name))}</span>
+          <span style="min-width:0">
+            <span class="bold t-sm" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.name)}</span>
+            <span class="t-xs muted" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.role||'Profissional autônomo')}</span>
+          </span>
+        </div>
+      </div>
+      <nav class="side-nav">
+        <p class="nav-title">Agenda</p>
+        ${navItem('dashboard','Calendário','calendar','#/dashboard',false)}
+        ${navItem('appointments','Compromissos','clock','#/agendamentos',true)}
+        <p class="nav-title">Cadastros</p>
+        ${navItem('clients','Clientes','users','#/clientes',false)}
+        ${navItem('services','Serviços','tag','#/servicos',false)}
+      </nav>
+      <div class="side-foot">
+        <button class="nav-item w-full" data-action="logout" style="color:var(--pa-danger)">
+          <i>${icon('logout','1.125rem')}</i><span>Sair da conta</span>
+        </button>
+      </div>
+    </aside>
+    <div class="drawer-backdrop ${state.drawerOpen?'show':''}" data-action="close-drawer"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn hamburger" data-action="toggle-drawer" aria-label="Abrir menu de navegação">${icon('menu','1.25rem')}</button>
+        <div class="search">
+          ${icon('search','1.0625rem')}
+          <input id="searchInput" type="search" placeholder="Buscar evento, cliente ou serviço" aria-label="Buscar evento"
+                 value="${esc(state.search)}" autocomplete="off">
+          <div class="search-results" id="searchResults" hidden></div>
+        </div>
+        <div class="flex gap-2 center-y" style="margin-left:auto">
+          <div class="notif-wrap">
+            <button class="icon-btn notif" data-action="toggle-dropdown" data-target="#notifPanel" aria-label="Notificações" aria-expanded="false">
+              ${icon('bell','1.25rem')}<span class="notif-dot" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown" id="notifPanel" hidden>
+              <p class="nav-title" style="padding:.25rem .5rem">Notificações</p>
+              ${notifItems()}
+            </div>
+          </div>
+          <button class="btn btn-primary hide-sm" data-action="new-appointment">${icon('plus','1rem')} Novo compromisso</button>
+          <div class="notif-wrap">
+            <button class="icon-btn" data-action="toggle-dropdown" data-target="#userPanel" aria-label="Menu do usuário" aria-expanded="false">
+              <span class="avatar avatar-sm" aria-hidden="true">${esc(initials(u.name))}</span>
+            </button>
+            <div class="dropdown" id="userPanel" hidden>
+              <div style="padding:.5rem .5rem .25rem">
+                <p class="bold t-sm">${esc(u.name)}</p>
+                <p class="t-xs muted">${esc(u.email||u.role||'')}</p>
+              </div>
+              <button class="nav-item w-full" data-action="logout" style="color:var(--pa-danger)">${icon('logout','1rem')}<span>Sair da conta</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="content" id="content">${content}</div>
+    </div>
+
+    <nav class="bottom-nav" aria-label="Navegação inferior">
+      <a class="bn-item ${active==='dashboard'?'active':''}" href="#/dashboard">${icon('calendar','1.25rem')}<span>Agenda</span></a>
+      <a class="bn-item ${active==='appointments'?'active':''}" href="#/agendamentos">${icon('clock','1.25rem')}<span>Compromissos</span><span class="bn-badge">${badge}</span></a>
+      <a class="bn-item ${active==='clients'?'active':''}" href="#/clientes">${icon('users','1.25rem')}<span>Clientes</span></a>
+      <a class="bn-item ${active==='services'?'active':''}" href="#/servicos">${icon('tag','1.25rem')}<span>Serviços</span></a>
+      <a class="bn-item" href="#/agendamento" style="color:var(--pa-primary)">${icon('plus','1.25rem')}<span>Novo</span></a>
+    </nav>
+  </div>`;
+}
+function notifItems(){
+  const today = dateKey(new Date());
+  const next = DB.appointments.filter(a => a.status!=='cancelado' && a.date >= today)
+    .sort((a,b)=> (a.date+a.start).localeCompare(b.date+b.start))[0];
+  const items = [];
+  if(next){
+    const c = DB.clients.find(x => x.id === next.clientId);
+    items.push(`<div class="notif-item">${icon('clock','1rem')}<div><p class="t-sm semi">Próximo compromisso</p><p class="t-xs muted">${esc(c?c.name:'Cliente')} — ${fmtDateBR(next.date)} às ${esc(next.start)}</p></div></div>`);
+  }
+  items.push(`<div class="notif-item">${icon('money','1rem')}<div><p class="t-sm semi">${DB.appointments.filter(a=>a.status!=='cancelado').length} compromissos ativos</p><p class="t-xs muted">${DB.clients.length} clientes cadastrados na base</p></div></div>`);
+  items.push(`<div class="notif-item">${icon('tag','1rem')}<div><p class="t-sm semi">Catálogo atualizado</p><p class="t-xs muted">${DB.services.length} serviços disponíveis para agendamento</p></div></div>`);
+  return items.join('');
+}
+
+/* ============================================================================
+   MÓDULO 1 — AUTENTICAÇÃO
+   ============================================================================ */
+function authAside(){
+  return `
+  <aside class="auth-aside">
+    <a class="brand" href="#/login">
+      <span class="brand-mark">${icon('calendar','1.25rem')}</span>
+      <span class="brand-name" style="color:#fff">Pro<span style="color:#BFDBFE">Agenda</span></span>
+    </a>
+    <div>
+      <h1 class="auth-headline">Sua agenda organizada, do tattoo ao chuveiro.</h1>
+      <p class="auth-sub">Controle horários, clientes e receita em um só lugar — simples, rápido e feito para quem trabalha sozinho.</p>
+      <div class="auth-features">
+        <div class="auth-feature"><i>${icon('calendar','1rem')}</i><span>Calendário semanal com horários livres e ocupados</span></div>
+        <div class="auth-feature"><i>${icon('money','1rem')}</i><span>Receita bruta da semana calculada automaticamente</span></div>
+        <div class="auth-feature"><i>${icon('users','1rem')}</i><span>Cadastro de clientes e catálogo de serviços</span></div>
+        <div class="auth-feature"><i>${icon('check','1rem')}</i><span>Fontes ajustáveis e navegação por teclado</span></div>
+      </div>
+    </div>
+    <blockquote class="auth-quote">“Antes eu anotava tudo no caderno e perdia cliente. Hoje não perco mais nenhum horário.”<br><strong>— Marina, tatuadora</strong></blockquote>
+  </aside>`;
+}
+function authCard(inner){ return `<main class="auth-main"><div class="auth-card">${inner}</div></main>`; }
+
+async function viewLogin(){
+  const html = `
+  <div class="auth-shell">
+    ${authAside()}
+    ${authCard(`
+      <div class="center-y gap-2 mb-4">
+        <span class="brand-mark" style="display:none"></span>
+        <h1>Entrar na sua agenda</h1>
+      </div>
+      <p class="muted t-sm mb-4">Acesse com seu e-mail e senha cadastrados.</p>
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="f-email">E-mail</label>
+          <input class="input" type="email" id="f-email" name="email" placeholder="voce@email.com" autocomplete="email" value="ana@proagenda.com" required>
+          <span class="error-msg" data-error-for="f-email">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <div class="field">
+          <label for="f-senha">Senha</label>
+          <div class="input-wrap">
+            <input class="input" type="password" id="f-senha" name="password" placeholder="••••••" autocomplete="current-password" required>
+            <button type="button" class="icon-btn-input" data-action="toggle-password" data-target="f-senha" aria-label="Mostrar senha">${icon('eye','1.125rem')}</button>
+          </div>
+          <span class="error-msg" data-error-for="f-senha">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <div class="flex between center-y mb-4">
+          <a class="link t-sm" href="#/recuperar">Esqueci minha senha</a>
+          <span class="t-xs muted">Demo: <strong>ana@proagenda.com</strong> / <strong>123456</strong></span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">${icon('logout','1rem','')} Entrar</button>
+      </form>
+      <div class="divider">ou entre com</div>
+      <div class="social-row">
+        <button class="social-btn" data-action="social-login" data-provider="Google">
+          <svg width="1rem" height="1rem" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.2a5.3 5.3 0 0 1-2.3 3.5v2.9h3.7c2.2-2 3.4-5 3.4-8.6Z"/><path fill="#34A853" d="M12 24c3.1 0 5.7-1 7.6-2.8l-3.7-2.9c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v3A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.6 14.7a7.2 7.2 0 0 1 0-4.6v-3H1.8a12 12 0 0 0 0 10.5l3.8-2.9Z"/><path fill="#EA4335" d="M12 4.8c1.7 0 3.2.6 4.4 1.7l3.3-3.3A11.7 11.7 0 0 0 12 0 12 12 0 0 0 1.8 6.2l3.8 3A7.2 7.2 0 0 1 12 4.8Z"/></svg>
+          Google</button>
+        <button class="social-btn" data-action="social-login" data-provider="Apple">
+          <svg width="1rem" height="1rem" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.7c0-2.4 2-3.6 2.1-3.6-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.6.9-.8 0-1.9-.9-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.2 1.7 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.7c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7 0 0-2.5-1-2.6-3.8ZM14 5.6c.6-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.1 1.8-1 2.9 1.1.1 2.2-.5 2.8-1.3Z"/></svg>
+          Apple</button>
+        <button class="social-btn" data-action="social-login" data-provider="Facebook">
+          <svg width="1rem" height="1rem" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.5 2.9h-2.3v7A10 10 0 0 0 22 12Z"/></svg>
+          Facebook</button>
+      </div>
+      <p class="center t-sm muted mt-4">Ainda não tem conta? <a class="link" href="#/cadastro">Criar conta</a></p>
+    `)}
+  </div>`;
+  $('#root').innerHTML = html;
+  setTimeout(() => $('#f-email')?.focus(), 60);
+}
+
+async function viewRegister(){
+  const html = `
+  <div class="auth-shell">
+    ${authAside()}
+    ${authCard(`
+      <h1>Criar sua conta</h1>
+      <p class="muted t-sm mb-4">Leva menos de um minuto. Depois é só montar sua agenda.</p>
+      <form id="registerForm" novalidate>
+        <div class="field">
+          <label for="r-nome">Nome completo <span class="req">*</span></label>
+          <input class="input" id="r-nome" name="name" placeholder="Seu nome" required>
+          <span class="error-msg" data-error-for="r-nome">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <div class="field">
+          <label for="r-email">E-mail <span class="req">*</span></label>
+          <input class="input" type="email" id="r-email" name="email" placeholder="voce@email.com" required>
+          <span class="error-msg" data-error-for="r-email">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <div class="field">
+          <label for="r-telefone">Telefone</label>
+          <input class="input" id="r-telefone" name="phone" placeholder="(11) 99999-9999" inputmode="numeric" data-mask="phone">
+        </div>
+        <div class="field">
+          <label for="r-atividade">Sua atividade</label>
+          <select class="input" id="r-atividade" name="role">
+            <option>Tatuador(a)</option><option>Eletricista</option><option>Bartender</option><option>Esteticista</option><option>Outro profissional</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="r-senha">Senha <span class="req">*</span></label>
+          <div class="input-wrap">
+            <input class="input" type="password" id="r-senha" name="password" placeholder="Mínimo 6 caracteres" required>
+            <button type="button" class="icon-btn-input" data-action="toggle-password" data-target="r-senha" aria-label="Mostrar senha">${icon('eye','1.125rem')}</button>
+          </div>
+          <span class="error-msg" data-error-for="r-senha">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Criar conta e entrar</button>
+      </form>
+      <p class="center t-sm muted mt-4">Já tem conta? <a class="link" href="#/login">Entrar</a></p>
+    `)}
+  </div>`;
+  $('#root').innerHTML = html;
+}
+
+/* --- Fluxo de recuperação de senha (3 etapas) --- */
+function recoverSteps(step){
+  const labels = ['E-mail','Código','Nova senha'];
+  let html = '<div class="steps">';
+  labels.forEach((l,i) => {
+    const n = i + 1;
+    const cls = step > n ? 'done' : (step === n ? 'active' : '');
+    html += `<span class="step-dot ${cls}" aria-label="Etapa ${n}: ${l}">${step > n ? icon('check','.75rem') : n}</span>`;
+    if(i < labels.length-1) html += `<span class="step-line ${step>n?'done':''}"></span>`;
+  });
+  html += '</div>';
+  return html;
+}
+async function viewRecover(){
+  const st = state.recover;
+  let body = '';
+  if(st.step === 1){
+    body = `
+      <h1>Recuperar acesso</h1>
+      <p class="muted t-sm mb-4">Informe seu e-mail e enviaremos um código de 4 dígitos.</p>
+      <form id="recoverEmailForm" novalidate>
+        <div class="field">
+          <label for="c-email">E-mail cadastrado</label>
+          <input class="input" type="email" id="c-email" placeholder="voce@email.com" value="${esc(st.email)}" required>
+          <span class="error-msg" data-error-for="c-email">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">${icon('mail' in ICONS?'mail':'check','1rem')} Enviar código</button>
+      </form>`;
+  } else if(st.step === 2){
+    body = `
+      <h1>Verificar código</h1>
+      <p class="muted t-sm mb-4">Enviamos um código de 4 dígitos para <strong>${esc(st.email)}</strong>.</p>
+      <form id="otpForm" novalidate>
+        <div class="otp-row" id="otpRow">
+          ${[0,1,2,3].map(i=>`<input class="otp-input" id="otp${i}" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Dígito ${i+1}">`).join('')}
+        </div>
+        <span class="error-msg" id="otpError" style="margin-top:.5rem">${icon('warning','.875rem')}<span></span></span>
+        <div class="resend">
+          <span id="otpTimer" class="t-sm muted">Reenviar código em 00:30</span>
+          <button type="button" class="link" id="resendBtn" data-action="resend-otp" disabled>Reenviar agora</button>
+        </div>
+        <button class="btn btn-primary btn-block mt-4" type="submit">Verificar código</button>
+      </form>`;
+  } else {
+    body = `
+      <h1>Criar nova senha</h1>
+      <p class="muted t-sm mb-4">Escolha uma senha com no mínimo 6 caracteres.</p>
+      <form id="resetPasswordForm" novalidate>
+        <div class="field">
+          <label for="n-senha">Nova senha</label>
+          <div class="input-wrap">
+            <input class="input" type="password" id="n-senha" placeholder="Nova senha" required>
+            <button type="button" class="icon-btn-input" data-action="toggle-password" data-target="n-senha" aria-label="Mostrar senha">${icon('eye','1.125rem')}</button>
+          </div>
+          <span class="error-msg" data-error-for="n-senha">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <div class="field">
+          <label for="n-confirma">Confirmar nova senha</label>
+          <div class="input-wrap">
+            <input class="input" type="password" id="n-confirma" placeholder="Repita a senha" required>
+            <button type="button" class="icon-btn-input" data-action="toggle-password" data-target="n-confirma" aria-label="Mostrar senha">${icon('eye','1.125rem')}</button>
+          </div>
+          <span class="error-msg" data-error-for="n-confirma">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Salvar nova senha</button>
+      </form>`;
+  }
+  const html = `
+  <div class="auth-shell">
+    ${authAside()}
+    ${authCard(`
+      <a class="flex gap-2 center-y t-sm muted mb-4" href="#/login" style="width:fit-content">${icon('arrowLeft','1rem')} Voltar para o login</a>
+      ${recoverSteps(st.step)}
+      ${body}
+    `)}
+  </div>`;
+  $('#root').innerHTML = html;
+  if(st.step === 2){
+    startOtpCountdown();
+    setTimeout(()=>$('#otp0')?.focus(), 80);
+  } else if(st.step === 3){
+    setTimeout(()=>$('#n-senha')?.focus(), 60);
+  }
+}
+
+/* ============================================================================
+   MÓDULO 2 — DASHBOARD / CALENDÁRIO SEMANAL
+   ============================================================================ */
+let weekData = [];
+async function viewDashboard(){
+  const inicio = dateKey(state.weekStart);
+  const fim = dateKey(addDays(state.weekStart,5));
+  weekData = await api.listAppointments(inicio, fim);
+  $('#root').innerHTML = shell('dashboard', dashboardContent());
+  restoreSearchFocus();
+  updateSearchResults();
+}
+function weekRangeText(){
+  const s = state.weekStart, e = addDays(s,5);
+  const sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear();
+  const base = sameMonth
+    ? `${s.getDate()} – ${e.getDate()} de ${monthName(s)}`
+    : `${s.getDate()} de ${monthName(s)} – ${e.getDate()} de ${monthName(e)}`;
+  return s.getFullYear() === new Date().getFullYear() ? base : `${base} de ${s.getFullYear()}`;
+}
+function dashboardContent(){
+  const days = Array.from({length:6},(_,i)=> addDays(state.weekStart,i));
+  const todayKey = dateKey(new Date());
+  const active = weekData.filter(a => a.status !== 'cancelado');
+  const weekRevenue = active.reduce((s,a)=> s + Number(a.price||0), 0);
+  const weekMinutes = active.reduce((s,a)=> s + (toMinutes(a.end)-toMinutes(a.start)), 0);
+  const dayAppts = weekData.filter(a => a.date === state.selectedDay);
+  const dayActive = dayAppts.filter(a => a.status !== 'cancelado');
+  const dayMinutes = dayActive.reduce((s,a)=> s + (toMinutes(a.end)-toMinutes(a.start)), 0);
+  const next = nextAppointment(dayActive);
+  const selDate = parseKey(state.selectedDay);
+
+  const dayStrip = days.map((d,i) => {
+    const k = dateKey(d);
+    const count = active.filter(a=>a.date===k).length;
+    const isActive = k === state.selectedDay;
+    return `<button class="day-item ${isActive?'active':''} ${k===todayKey?'today':''}" data-action="select-day" data-date="${k}" aria-pressed="${isActive}">
+      <span class="dow">${DOW[i]}</span>
+      <span class="dnum">${d.getDate()}</span>
+      <span class="dcount">${count} ${count===1?'agend.':'agend.'}</span>
+    </button>`;
+  }).join('');
+
+  /* Timeline do dia */
+  const rows = timelineRowsHTML();
+
+  return `
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">Calendário semanal</h1>
+      <p class="muted t-sm">${selDate.toLocaleDateString('pt-BR',{weekday:'long'}).replace('.','')}, ${fmtDateLong(selDate)}</p>
+    </div>
+    <div class="week-nav">
+      <button class="icon-btn" data-action="week-prev" aria-label="Semana anterior">${icon('left','1.125rem')}</button>
+      <span class="week-range">${weekRangeText()}</span>
+      <button class="icon-btn" data-action="week-next" aria-label="Próxima semana">${icon('right','1.125rem')}</button>
+      <button class="btn btn-outline btn-sm" data-action="week-today">Hoje</button>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <section class="panel" aria-label="Linha do tempo do dia">
+      <div class="panel-head">
+        <div>
+          <h2 class="t-lg">Linha do tempo</h2>
+          <p class="t-xs muted">${dayActive.length} ${dayActive.length===1?'compromisso':'compromissos'} ${dayActive.length===1?'agendado':'agendados'} neste dia</p>
+        </div>
+        <button class="btn btn-soft btn-sm" data-action="new-appointment" data-date="${state.selectedDay}">${icon('plus','.875rem')} Agendar</button>
+      </div>
+      <div class="day-strip">${dayStrip}</div>
+      <div class="timeline" id="timeline">${rows}</div>
+    </section>
+
+    <aside class="flex gap-4" style="flex-direction:column">
+      <div class="metric">
+        <p class="metric-label">${icon('money','1rem')} Receita bruta da semana</p>
+        <p class="metric-value primary">${fmtMoney(weekRevenue)}</p>
+        <p class="metric-sub">${active.length} serviços • ${(weekMinutes/60).toFixed(1).replace('.',',')} h reservadas</p>
+        <div style="height:.375rem;border-radius:999rem;background:#E2E8F0;margin-top:.75rem;overflow:hidden">
+          <div style="height:100%;width:${Math.min(100, active.length/10*100)}%;background:linear-gradient(90deg,#2563EB,#60A5FA)"></div>
+        </div>
+        <p class="t-xs muted mt-2">Meta semanal: ${fmtMoney(2500)}</p>
+      </div>
+
+      <div class="metric">
+        <p class="metric-label">${icon('clock','1rem')} Resumo do dia</p>
+        <div class="summary-row mt-2"><span class="muted">Total de compromissos</span><strong>${dayActive.length}</strong></div>
+        <div class="summary-row"><span class="muted">Horas reservadas</span><strong>${(dayMinutes/60).toFixed(1).replace('.',',')}h</strong></div>
+        <div class="summary-row"><span class="muted">Ticket médio do dia</span><strong>${dayActive.length?fmtMoney(dayActive.reduce((s,a)=>s+Number(a.price||0),0)/Math.max(1,dayActive.length)):'—'}</strong></div>
+        <div class="next-box">
+          <p class="label">Próximo horário</p>
+          ${next ? `<p class="semi" style="margin-top:.1875rem">${esc(next.start)} — ${esc(next.client?.name || next.clientName || 'Cliente')}</p>
+                    <p class="t-xs muted">${esc(next.service?.name || 'Serviço')} • ${fmtMoney(next.price)}</p>`
+                 : `<p class="t-sm muted" style="margin-top:.1875rem">Nenhum compromisso futuro neste dia.</p>`}
+        </div>
+      </div>
+
+      <div class="metric">
+        <p class="metric-label">${icon('users','1rem')} Clientes mais atendidos</p>
+        ${topClients(active).map(c=>`<div class="summary-row"><span class="muted">${esc(c.name)}</span><strong>${c.count}×</strong></div>`).join('') || '<p class="t-sm muted">Sem dados ainda.</p>'}
+      </div>
+    </aside>
+  </div>`;
+}
+function nextAppointment(list){
+  if(!list.length) return null;
+  const now = new Date();
+  const today = dateKey(now);
+  const nowMin = now.getHours()*60 + now.getMinutes();
+  const sorted = list.slice().sort((a,b)=> (a.date+a.start).localeCompare(b.date+b.start));
+  const future = sorted.find(a => a.date > today || (a.date === today && toMinutes(a.start) >= nowMin));
+  return future || sorted[0];
+}
+function topClients(list){
+  const map = new Map();
+  list.forEach(a => {
+    const name = a.client?.name || a.clientName || 'Cliente';
+    map.set(name, (map.get(name) || 0) + 1);
+  });
+  return Array.from(map.entries()).map(([name,count]) => ({name,count})).sort((a,b)=>b.count-a.count).slice(0,3);
+}
+function appointmentCard(a){
+  const cancelled = a.status === 'cancelado';
+  return `<div class="appt ${cancelled?'appt-cancelled':''}" data-id="${a.id}">
+    <span class="appt-time">${esc(a.start)} – ${esc(a.end)}</span>
+    <div class="appt-body">
+      <button class="appt-name" data-action="edit-appointment" data-id="${a.id}" style="text-align:left">${esc(a.client?.name || a.clientName || 'Cliente')}</button>
+      <div class="appt-meta">
+        <span>${esc(a.service?.name || 'Serviço')}</span>
+        ${cancelled?'<span class="badge badge-red">Cancelado</span>':''}
+        ${a.notes?`<span title="${esc(a.notes)}">• ${esc(a.notes.slice(0,28))}${a.notes.length>28?'…':''}</span>`:''}
+      </div>
+    </div>
+    <span class="appt-price">${fmtMoney(a.price)}</span>
+    <button class="appt-menu-btn" data-action="toggle-appt-menu" data-id="${a.id}" aria-label="Opções do agendamento de ${esc(a.client?.name||'cliente')}">${icon('dots','1rem')}</button>
+    <div class="appt-menu" hidden>
+      <button data-action="edit-appointment" data-id="${a.id}">${icon('edit','.9375rem')} Editar agendamento</button>
+      <button data-action="cancel-appointment" data-id="${a.id}">${icon('x','.9375rem')} Cancelar agendamento</button>
+      <button class="danger" data-action="delete-appointment" data-id="${a.id}">${icon('trash','.9375rem')} Excluir</button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================================
+   MÓDULO 3 — GESTÃO DE AGENDAMENTOS (CRUD)
+   ============================================================================ */
+function timelineRowsHTML(){
+  const q = state.search.trim().toLowerCase();
+  const dayAppts = weekData.filter(a => a.date === state.selectedDay)
+    .sort((a,b)=>a.start.localeCompare(b.start));
+  const matches = a => ((a.client?.name||a.clientName||'') + ' ' + (a.service?.name||'') + ' ' + (a.notes||'')).toLowerCase().includes(q);
+  if(q){
+    const found = dayAppts.filter(matches);
+    if(!found.length) return `<div class="empty-state">${icon('search','1.75rem')}<h3>Nenhum resultado</h3><p class="t-sm">Nada encontrado para “${esc(state.search)}” neste dia.</p></div>`;
+    return found.map(a=>`<div class="tl-row"><div class="tl-time">${esc(a.start)}</div><div class="slot-area">${appointmentCard(a)}</div></div>`).join('');
+  }
+  return HOURS.map(h => {
+    const startMin = h*60, endMin = h*60+60;
+    const overlapping = dayAppts.filter(a => toMinutes(a.start) < endMin && toMinutes(a.end) > startMin)
+      .sort((a,b)=>a.start.localeCompare(b.start));
+    const label = `${pad(h)}:00`;
+    if(!overlapping.length){
+      return `<div class="tl-row">
+        <div class="tl-time">${label}</div>
+        <div class="slot-area">
+          <button class="slot-free" data-action="new-appointment" data-date="${state.selectedDay}" data-time="${label}">
+            ${icon('plus','.875rem')} Horário disponível — clique para agendar às ${label}
+          </button>
+        </div>
+      </div>`;
+    }
+    return `<div class="tl-row">
+      <div class="tl-time">${label}</div>
+      <div class="slot-area">${overlapping.map(appointmentCard).join('')}</div>
+    </div>`;
+  }).join('');
+}
+function serviceOptions(selected){
+  return `<option value="">Selecione um serviço…</option>` + DB.services.map(s =>
+    `<option value="${s.id}" ${s.id===selected?'selected':''}>${esc(s.name)} — ${s.duration} min • ${fmtMoney(s.price)}</option>`).join('');
+}
+function clientNames(){
+  return DB.clients.map(c => `<option value="${esc(c.name)}">`).join('');
+}
+async function viewAppointment(){
+  const id = state.params.get('id') || state.editingId;
+  const ap = id ? DB.appointments.find(a => a.id === id) : null;
+  if(id && !ap){ toast('Agendamento não encontrado.', 'error'); location.hash = '#/dashboard'; return; }
+  state.editingId = ap ? ap.id : null;
+  const editing = !!ap;
+  const date = ap ? ap.date : (state.params.get('data') || dateKey(new Date()));
+  const start = ap ? ap.start : (state.params.get('hora') || '09:00');
+  const svc = ap ? DB.services.find(s => s.id === ap.serviceId) : null;
+  const end = ap ? ap.end : fromMinutes(toMinutes(start) + (svc ? svc.duration : 60));
+  const c = ap ? DB.clients.find(x => x.id === ap.clientId) : null;
+  const clientName = ap ? (c?.name || ap.clientName || '') : '';
+
+  const form = `
+  <form id="appointmentForm" novalidate>
+    <div class="form-grid">
+      <div class="field col-2">
+        <label for="f-nome">Nome completo do cliente <span class="req">*</span></label>
+        <input class="input" id="f-nome" name="clientName" list="clientList" placeholder="Ex.: Mariana Alves" value="${esc(clientName)}" autocomplete="off">
+        <datalist id="clientList">${clientNames()}</datalist>
+        <span class="error-msg" data-error-for="f-nome">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="f-telefone">Telefone <span class="req">*</span></label>
+        <input class="input" id="f-telefone" name="phone" placeholder="(11) 99999-9999" inputmode="numeric" data-mask="phone" value="${esc(c?.phone||'')}">
+        <span class="error-msg" data-error-for="f-telefone">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="f-email">E-mail</label>
+        <input class="input" type="email" id="f-email" name="email" placeholder="cliente@email.com" value="${esc(c?.email||'')}">
+        <span class="error-msg" data-error-for="f-email">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field col-2">
+        <label for="f-servico">Tipo de serviço <span class="req">*</span></label>
+        <select class="input" id="f-servico" name="serviceId" required>${serviceOptions(ap?.serviceId)}</select>
+        <span class="hint">A duração e o valor são preenchidos automaticamente pelo catálogo de serviços.</span>
+        <span class="error-msg" data-error-for="f-servico">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="f-data">Data do agendamento <span class="req">*</span></label>
+        <input class="input" type="date" id="f-data" name="date" value="${esc(date)}" required>
+        <span class="error-msg" data-error-for="f-data">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="f-inicio">Horário de início <span class="req">*</span></label>
+        <input class="input" type="time" id="f-inicio" name="start" value="${esc(start)}" required step="900">
+        <span class="error-msg" data-error-for="f-inicio">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="f-fim">Horário de término <span class="req">*</span></label>
+        <input class="input" type="time" id="f-fim" name="end" value="${esc(end)}" required step="900">
+        <span class="error-msg" data-error-for="f-fim">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="f-valor">Valor a cobrar (R$) <span class="req">*</span></label>
+        <input class="input" id="f-valor" name="price" inputmode="decimal" data-mask="money" placeholder="0,00" value="${maskMoney(ap?.price ?? svc?.price ?? 0)}">
+        <span class="error-msg" data-error-for="f-valor">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field col-2">
+        <label for="f-obs">Observações</label>
+        <textarea class="input" id="f-obs" name="notes" placeholder="Detalhes do atendimento, material, endereço…">${esc(ap?.notes||'')}</textarea>
+      </div>
+    </div>
+    <div id="formAlert"></div>
+    <div class="flex gap-2 mt-4" style="justify-content:flex-end;flex-wrap:wrap">
+      <a class="btn btn-ghost" href="#/dashboard">Cancelar</a>
+      <button class="btn btn-primary" type="submit">${icon('check','1rem')} ${editing?'Salvar alterações':'Confirmar agendamento'}</button>
+    </div>
+  </form>`;
+
+  let content = '';
+  if(editing){
+    const statusBadge = ap.status === 'cancelado'
+      ? '<span class="badge badge-red">Cancelado</span>' : '<span class="badge badge-green">Confirmado</span>';
+    content = `
+    <div class="page-head">
+      <div>
+        <div class="breadcrumb"><a href="#/dashboard">Agenda</a> ${icon('right','.75rem')} <span>Editar agendamento</span></div>
+        <h1 class="page-title">Gerenciar agendamento</h1>
+      </div>
+      <a class="btn btn-outline" href="#/dashboard">${icon('arrowLeft','1rem')} Voltar à agenda</a>
+    </div>
+    <div class="split">
+      <div class="flex gap-4" style="flex-direction:column">
+        <div class="summary-box">
+          <div class="flex center-y gap-3 mb-3">
+            <span class="avatar avatar-lg">${esc(initials(c?.name || ap.clientName || 'C'))}</span>
+            <div style="min-width:0">
+              <p class="bold t-lg">${esc(c?.name || ap.clientName || 'Cliente')}</p>
+              <p class="t-xs muted">${esc(c?.phone||'Telefone não informado')}</p>
+            </div>
+          </div>
+          <div class="summary-row-s"><span class="k">Serviço</span><span class="v">${esc(svc?.name||'—')}</span></div>
+          <div class="summary-row-s"><span class="k">Data</span><span class="v">${fmtDateBR(ap.date)}</span></div>
+          <div class="summary-row-s"><span class="k">Horário</span><span class="v">${esc(ap.start)} – ${esc(ap.end)}</span></div>
+          <div class="summary-row-s"><span class="k">Duração</span><span class="v">${((toMinutes(ap.end)-toMinutes(ap.start))/60).toFixed(1).replace('.',',')}h</span></div>
+          <div class="summary-row-s"><span class="k">Valor</span><span class="v">${fmtMoney(ap.price)}</span></div>
+          <div class="summary-row-s"><span class="k">Status</span><span class="v">${statusBadge}</span></div>
+        </div>
+        <div class="danger-zone">
+          <h4>${icon('warning','1rem')} Zona de risco</h4>
+          <p class="t-sm mt-1" style="color:#991B1B">Cancelar mantém o registro no histórico; excluir apaga o agendamento permanentemente.</p>
+          <div class="flex gap-2 mt-3" style="flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" data-action="cancel-appointment" data-id="${ap.id}">Cancelar agendamento</button>
+            <button class="btn btn-danger btn-sm" data-action="delete-appointment" data-id="${ap.id}">${icon('trash','.875rem')} Excluir</button>
+          </div>
+        </div>
+      </div>
+      <section class="panel">
+        <div class="panel-head"><h2 class="t-lg">Dados do agendamento</h2><span class="badge badge-blue">${editing?'Edição':'Novo'}</span></div>
+        <div class="panel-body">${form}</div>
+      </section>
+    </div>`;
+  } else {
+    content = `
+    <div class="page-head">
+      <div>
+        <div class="breadcrumb"><a href="#/dashboard">Agenda</a> ${icon('right','.75rem')} <span>Novo agendamento</span></div>
+        <h1 class="page-title">Novo agendamento</h1>
+        <p class="muted t-sm">Preencha os dados do cliente e defina o horário do serviço.</p>
+      </div>
+      <a class="btn btn-outline" href="#/dashboard">${icon('arrowLeft','1rem')} Voltar à agenda</a>
+    </div>
+    <section class="panel">
+      <div class="panel-head"><h2 class="t-lg">Formulário de agendamento</h2><span class="badge badge-blue">${fmtDateBR(date)}</span></div>
+      <div class="panel-body">${form}</div>
+    </section>`;
+  }
+  $('#root').innerHTML = shell(editing ? 'appointments' : 'dashboard', content);
+}
+
+/* --- Lista completa de compromissos --- */
+function appointmentRowsHTML(list){
+  if(!list.length) return `<tr><td colspan="7"><div class="empty-state"><h3>Nenhum compromisso encontrado</h3><p class="t-sm">Ajuste a busca ou crie um novo agendamento.</p></div></td></tr>`;
+  return list.map(a=>`<tr>
+            <td class="nowrap">${fmtDateBR(a.date)}</td>
+            <td class="nowrap">${esc(a.start)} – ${esc(a.end)}</td>
+            <td>${esc(a.client?.name||a.clientName||'—')}</td>
+            <td>${esc(a.service?.name||'—')}</td>
+            <td class="bold">${fmtMoney(a.price)}</td>
+            <td>${a.status==='cancelado'?'<span class="badge badge-red">Cancelado</span>':'<span class="badge badge-green">Confirmado</span>'}</td>
+            <td class="right nowrap">
+              <button class="icon-btn" data-action="edit-appointment" data-id="${a.id}" aria-label="Editar agendamento">${icon('edit','1rem')}</button>
+              <button class="icon-btn" data-action="delete-appointment" data-id="${a.id}" aria-label="Excluir agendamento" style="color:var(--pa-danger)">${icon('trash','1rem')}</button>
+            </td></tr>`).join('');
+}
+async function viewAppointmentsList(){
+  const all = await api.listAppointments('', '');
+  const q = state.search.trim().toLowerCase();
+  const list = all.filter(a => !q || ((a.client?.name||a.clientName||'')+' '+(a.service?.name||'')+' '+(a.notes||'')).toLowerCase().includes(q))
+    .sort((a,b)=> (b.date+b.start).localeCompare(a.date+a.start));
+  const total = list.filter(a=>a.status!=='cancelado').reduce((s,a)=>s+Number(a.price||0),0);
+  const content = `
+  <div class="page-head">
+    <div>
+      <div class="breadcrumb"><a href="#/dashboard">Agenda</a> ${icon('right','.75rem')} <span>Compromissos</span></div>
+      <h1 class="page-title">Todos os compromissos</h1>
+      <p class="muted t-sm" id="apptSummary">${list.length} registros • ${fmtMoney(total)} em serviços ativos</p>
+    </div>
+    <a class="btn btn-primary" href="#/agendamento">${icon('plus','1rem')} Novo compromisso</a>
+  </div>
+  <section class="panel">
+    <div class="panel-head"><h2 class="t-lg">Histórico de agendamentos</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Data</th><th>Horário</th><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Status</th><th></th></tr></thead>
+        <tbody id="apptsBody">${appointmentRowsHTML(list)}</tbody>
+      </table>
+    </div>
+  </section>`;
+  $('#root').innerHTML = shell('appointments', content);
+  restoreSearchFocus();
+}
+async function refreshAppointmentsTable(){
+  const body = $('#apptsBody');
+  if(!body) return;
+  const all = await api.listAppointments('', '');
+  const q = state.search.trim().toLowerCase();
+  const list = all.filter(a => !q || ((a.client?.name||a.clientName||'')+' '+(a.service?.name||'')+' '+(a.notes||'')).toLowerCase().includes(q))
+    .sort((a,b)=> (b.date+b.start).localeCompare(a.date+a.start));
+  body.innerHTML = appointmentRowsHTML(list);
+  const total = list.filter(a=>a.status!=='cancelado').reduce((s,a)=>s+Number(a.price||0),0);
+  const summary = $('#apptSummary');
+  if(summary) summary.textContent = `${list.length} registros • ${fmtMoney(total)} em serviços ativos`;
+}
+
+/* ============================================================================
+   MÓDULO 4 — CADASTROS BASE
+   ============================================================================ */
+function clientCardsHTML(clients){
+  if(!clients.length) return `<div class="card empty-state" style="grid-column:1/-1">${icon('users','1.75rem')}<h3>Nenhum cliente encontrado</h3><p class="t-sm">Cadastre seu primeiro cliente para começar a agendar.</p></div>`;
+  return clients.map(c=>`
+      <article class="client-card">
+        <div class="flex center-y gap-3">
+          <span class="avatar" aria-hidden="true">${esc(initials(c.name))}</span>
+          <div style="min-width:0">
+            <h2 class="t-base bold" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</h2>
+            <p class="t-xs muted">${esc(c.phone)}</p>
+          </div>
+        </div>
+        <div class="t-xs muted">${icon('whatsapp','.75rem')} ${esc(c.email||'Sem e-mail cadastrado')}</div>
+        ${c.notes?`<p class="t-xs soft" style="background:#F8FAFC;border-radius:.5rem;padding:.5rem">${esc(c.notes)}</p>`:''}
+        <div class="flex between center-y t-xs" style="padding-top:.5rem;border-top:1px dashed var(--pa-border)">
+          <span class="muted">${c.total} atendimento(s)${c.last?` • ${fmtDateBR(c.last)}`:''}</span>
+          <span class="flex gap-1">
+            <button class="icon-btn" data-action="open-history" data-id="${c.id}" aria-label="Ver histórico de ${esc(c.name)}">${icon('clock','1rem')}</button>
+            <button class="icon-btn" data-action="open-client-modal" data-id="${c.id}" aria-label="Editar ${esc(c.name)}">${icon('edit','1rem')}</button>
+            <button class="icon-btn" data-action="delete-client" data-id="${c.id}" aria-label="Excluir ${esc(c.name)}" style="color:var(--pa-danger)">${icon('trash','1rem')}</button>
+          </span>
+        </div>
+      </article>`).join('');
+}
+async function viewClients(){
+  const clients = await api.listClients(state.clientQuery);
+  const content = `
+  <div class="page-head">
+    <div>
+      <div class="breadcrumb"><a href="#/dashboard">Agenda</a> ${icon('right','.75rem')} <span>Clientes</span></div>
+      <h1 class="page-title">Clientes</h1>
+      <p class="muted t-sm" id="clientCount">${clients.length} ${clients.length===1?'cliente cadastrado':'clientes cadastrados'}</p>
+    </div>
+    <button class="btn btn-primary" data-action="open-client-modal">${icon('plus','1rem')} Novo cliente</button>
+  </div>
+  <div class="toolbar">
+    <div class="search" style="max-width:22rem">
+      ${icon('search','1.0625rem')}
+      <input id="clientSearch" type="search" placeholder="Buscar por nome ou telefone" aria-label="Buscar cliente" value="${esc(state.clientQuery)}">
+    </div>
+  </div>
+  <div class="client-grid" id="clientGrid">${clientCardsHTML(clients)}</div>`;
+  $('#root').innerHTML = shell('clients', content);
+}
+async function refreshClientGrid(){
+  const clients = await api.listClients(state.clientQuery);
+  const grid = $('#clientGrid');
+  if(grid) grid.innerHTML = clientCardsHTML(clients);
+  const count = $('#clientCount');
+  if(count) count.textContent = `${clients.length} ${clients.length===1?'cliente cadastrado':'clientes cadastrados'}`;
+}
+async function viewServices(){
+  const services = await api.listServices();
+  const avgDuration = services.length ? Math.round(services.reduce((s,x)=>s+Number(x.duration||0),0)/services.length) : 0;
+  const avgPrice = services.length ? services.reduce((s,x)=>s+Number(x.price||0),0)/services.length : 0;
+  const content = `
+  <div class="page-head">
+    <div>
+      <div class="breadcrumb"><a href="#/dashboard">Agenda</a> ${icon('right','.75rem')} <span>Serviços</span></div>
+      <h1 class="page-title">Catálogo de serviços</h1>
+      <p class="muted t-sm">Serviços, duração média e preço padrão alimentam o agendamento e a receita semanal.</p>
+    </div>
+    <button class="btn btn-primary" data-action="open-service-modal">${icon('plus','1rem')} Novo serviço</button>
+  </div>
+  <div class="dash-grid" style="grid-template-columns:minmax(0,1fr) 19.5rem">
+    <section class="panel">
+      <div class="panel-head"><h2 class="t-lg">Serviços cadastrados</h2><span class="badge badge-blue">${services.length}</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Serviço</th><th>Categoria</th><th>Duração</th><th>Preço padrão</th><th></th></tr></thead>
+          <tbody>
+            ${services.map(s=>`<tr>
+              <td class="bold">${esc(s.name)}</td>
+              <td><span class="badge badge-gray">${esc(s.category||'Geral')}</span></td>
+              <td class="nowrap">${s.duration} min${s.duration>=60?` (${(s.duration/60).toFixed(1).replace('.',',')}h)`:''}</td>
+              <td class="bold">${fmtMoney(s.price)}</td>
+              <td class="right nowrap">
+                <button class="icon-btn" data-action="open-service-modal" data-id="${s.id}" aria-label="Editar ${esc(s.name)}">${icon('edit','1rem')}</button>
+                <button class="icon-btn" data-action="delete-service" data-id="${s.id}" aria-label="Excluir ${esc(s.name)}" style="color:var(--pa-danger)">${icon('trash','1rem')}</button>
+              </td></tr>`).join('') || `<tr><td colspan="5"><div class="empty-state"><h3>Catálogo vazio</h3><p class="t-sm">Cadastre seus serviços para agilizar os agendamentos.</p></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <aside class="flex gap-4" style="flex-direction:column">
+      <div class="metric">
+        <p class="metric-label">${icon('tag','1rem')} Resumo do catálogo</p>
+        <div class="summary-row mt-2"><span class="muted">Serviços ativos</span><strong>${services.length}</strong></div>
+        <div class="summary-row"><span class="muted">Duração média</span><strong>${avgDuration} min</strong></div>
+        <div class="summary-row"><span class="muted">Ticket médio</span><strong>${fmtMoney(avgPrice)}</strong></div>
+      </div>
+      <div class="card">
+        <p class="t-sm semi">${icon('warning','1rem')} Dica</p>
+        <p class="t-xs muted mt-1">Serviços com duração e preço preenchidos permiten que o sistema calcule automaticamente o horário de término, o valor cobrado e a receita da semana.</p>
+      </div>
+    </aside>
+  </div>`;
+  $('#root').innerHTML = shell('services', content);
+}
+
+/* ============================================================================
+   MODAIS (cliente, serviço, histórico, confirmação de exclusão)
+   ============================================================================ */
+function openClientModal(id){
+  const c = id ? DB.clients.find(x => x.id === id) : null;
+  openModal({
+    title: c ? 'Editar cliente' : 'Novo cliente',
+    body: `<form id="clientForm" data-id="${c?c.id:''}" novalidate>
+      <div class="field">
+        <label for="cf-nome">Nome completo <span class="req">*</span></label>
+        <input class="input" id="cf-nome" name="name" value="${esc(c?.name||'')}" placeholder="Nome do cliente">
+        <span class="error-msg" data-error-for="cf-nome">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="cf-telefone">Telefone <span class="req">*</span></label>
+        <input class="input" id="cf-telefone" name="phone" inputmode="numeric" data-mask="phone" value="${esc(c?.phone||'')}" placeholder="(11) 99999-9999">
+        <span class="error-msg" data-error-for="cf-telefone">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="cf-email">E-mail</label>
+        <input class="input" type="email" id="cf-email" name="email" value="${esc(c?.email||'')}" placeholder="cliente@email.com">
+        <span class="error-msg" data-error-for="cf-email">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="cf-obs">Observações</label>
+        <textarea class="input" id="cf-obs" name="notes" placeholder="Preferências, combinados…">${esc(c?.notes||'')}</textarea>
+      </div>
+    </form>`,
+    actions: `<button class="btn btn-ghost" data-action="close-modal">Cancelar</button>
+              <button class="btn btn-primary" data-action="save-client">${icon('check','1rem')} Salvar cliente</button>`
+  });
+}
+function openServiceModal(id){
+  const s = id ? DB.services.find(x => x.id === id) : null;
+  openModal({
+    title: s ? 'Editar serviço' : 'Novo serviço',
+    body: `<form id="serviceForm" data-id="${s?s.id:''}" novalidate>
+      <div class="field">
+        <label for="sf-nome">Nome do serviço <span class="req">*</span></label>
+        <input class="input" id="sf-nome" name="name" value="${esc(s?.name||'')}" placeholder="Ex.: Tatuagem personalizada">
+        <span class="error-msg" data-error-for="sf-nome">${icon('warning','.875rem')}<span></span></span>
+      </div>
+      <div class="field">
+        <label for="sf-categoria">Categoria</label>
+        <select class="input" id="sf-categoria" name="category">
+          ${['Tatuagem','Eletricista','Bartender','Esteticista','Geral'].map(c=>`<option ${s?.category===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="sf-duracao">Duração (minutos) <span class="req">*</span></label>
+          <input class="input" id="sf-duracao" name="duration" type="number" min="15" step="15" value="${s?s.duration:60}">
+          <span class="error-msg" data-error-for="sf-duracao">${icon('warning','.875rem')}<span></span></span>
+        </div>
+        <div class="field">
+          <label for="sf-preco">Preço padrão (R$) <span class="req">*</span></label>
+          <input class="input" id="sf-preco" name="price" inputmode="decimal" data-mask="money" value="${maskMoney(s?s.price:0)}">
+          <span class="error-msg" data-error-for="sf-preco">${icon('warning','.875rem')}<span></span></span>
+        </div>
+      </div>
+    </form>`,
+    actions: `<button class="btn btn-ghost" data-action="close-modal">Cancelar</button>
+              <button class="btn btn-primary" data-action="save-service">${icon('check','1rem')} Salvar serviço</button>`
+  });
+}
+function openHistoryModal(id){
+  const c = DB.clients.find(x => x.id === id);
+  const aps = DB.appointments.filter(a => a.clientId === id).sort((a,b)=>(b.date+b.start).localeCompare(a.date+a.start));
+  const spent = aps.filter(a=>a.status!=='cancelado').reduce((s,a)=>s+Number(a.price||0),0);
+  openModal({
+    title: `Histórico de ${c?.name||'cliente'}`,
+    body: `<div class="summary-row-s mb-3"><span class="k">Total de atendimentos</span><span class="v">${aps.length}</span></div>
+      <div class="summary-row-s mb-3"><span class="k">Total investido</span><span class="v">${fmtMoney(spent)}</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Data</th><th>Horário</th><th>Serviço</th><th>Valor</th></tr></thead>
+          <tbody>${aps.map(a=>`<tr>
+            <td class="nowrap">${fmtDateBR(a.date)}</td>
+            <td class="nowrap">${esc(a.start)}–${esc(a.end)}</td>
+            <td>${esc(DB.services.find(s=>s.id===a.serviceId)?.name||'—')}</td>
+            <td class="bold">${fmtMoney(a.price)}</td></tr>`).join('') || '<tr><td colspan="4"><div class="empty-state"><p class="t-sm">Nenhum atendimento registrado ainda.</p></div></td></tr>'}</tbody>
+        </table>
+      </div>`,
+    actions: `<button class="btn btn-outline" data-action="close-modal">Fechar</button>
+              <a class="btn btn-primary" href="#/agendamento" data-action="close-modal">${icon('plus','1rem')} Novo agendamento</a>`
+  });
+}
+function openDeleteModal(id){
+  const ap = DB.appointments.find(a => a.id === id);
+  const c = ap ? DB.clients.find(x => x.id === ap.clientId) : null;
+  openModal({
+    title: 'Excluir agendamento?',
+    body: `<div class="alert alert-danger">${icon('warning','1.125rem')}
+      <div><p class="semi">Esta ação é irreversível.</p>
+      <p class="t-sm mt-1">O agendamento de <strong>${esc(c?.name||ap?.clientName||'cliente')}</strong> em <strong>${ap?fmtDateBR(ap.date):''}</strong> às <strong>${ap?esc(ap.start):''}</strong> será removido permanentemente do seu histórico.</p></div></div>`,
+    actions: `<button class="btn btn-outline" data-action="close-modal">Cancelar</button>
+              <button class="btn btn-danger" data-action="confirm-delete-appt" data-id="${id}">${icon('trash','1rem')} Excluir</button>`
+  });
+}
+function openCancelModal(id){
+  const ap = DB.appointments.find(a => a.id === id);
+  const c = ap ? DB.clients.find(x => x.id === ap.clientId) : null;
+  openModal({
+    title: 'Cancelar agendamento?',
+    body: `<div class="alert alert-warning">${icon('warning','1.125rem')}
+      <div><p class="semi">O horário será liberado.</p>
+      <p class="t-sm mt-1">O agendamento de <strong>${esc(c?.name||'cliente')}</strong> em <strong>${ap?fmtDateBR(ap.date):''}</strong> às <strong>${ap?esc(ap.start):''}</strong> ficará registrado como cancelado e não contará na receita.</p></div></div>`,
+    actions: `<button class="btn btn-outline" data-action="close-modal">Voltar</button>
+              <button class="btn btn-primary" data-action="confirm-cancel-appt" data-id="${id}">Confirmar cancelamento</button>`
+  });
+}
+
+/* ============================================================================
+   BUSCA, OTP E VALIDAÇÃO
+   ============================================================================ */
+function restoreSearchFocus(){
+  if(!state.searchFocused) return;
+  const input = $('#searchInput');
+  if(input){ input.focus(); const v = input.value; input.setSelectionRange(v.length, v.length); }
+}
+function updateSearchResults(){
+  const box = $('#searchResults');
+  if(!box) return;
+  const q = state.search.trim().toLowerCase();
+  if(!q){ box.hidden = true; box.innerHTML = ''; return; }
+  const list = DB.appointments.map(enrich)
+    .filter(a => ((a.client?.name||a.clientName||'')+' '+(a.service?.name||'')+' '+(a.notes||'')).toLowerCase().includes(q))
+    .sort((a,b)=>(b.date+b.start).localeCompare(a.date+a.start)).slice(0,6);
+  box.innerHTML = list.length ? list.map(a=>`
+    <button class="search-item" data-action="edit-appointment" data-id="${a.id}">
+      <span class="avatar avatar-sm" aria-hidden="true">${esc(initials(a.client?.name||a.clientName||'C'))}</span>
+      <span style="min-width:0">
+        <span class="t-sm semi" style="display:block">${esc(a.client?.name||a.clientName||'Cliente')}</span>
+        <span class="t-xs muted">${fmtDateBR(a.date)} • ${esc(a.start)} • ${esc(a.service?.name||'Serviço')}</span>
+      </span>
+    </button>`).join('')
+    : `<p class="t-sm muted" style="padding:.75rem">Nenhum evento encontrado para “${esc(state.search)}”.</p>`;
+  box.hidden = false;
+}
+function startOtpCountdown(){
+  clearInterval(state.recover.timer);
+  state.recover.countdown = 30;
+  const tick = () => {
+    const label = $('#otpTimer'), btn = $('#resendBtn');
+    if(!label){ clearInterval(state.recover.timer); return; }
+    const m = String(Math.floor(state.recover.countdown/60)).padStart(2,'0');
+    const s = String(state.recover.countdown%60).padStart(2,'0');
+    label.textContent = `Reenviar código em ${m}:${s}`;
+    if(state.recover.countdown <= 0){
+      clearInterval(state.recover.timer);
+      label.textContent = 'Não recebeu o código?';
+      if(btn){ btn.disabled = false; btn.classList.remove('muted'); }
+    }
+    state.recover.countdown--;
+  };
+  tick();
+  state.recover.timer = setInterval(tick, 1000);
+}
+function setFieldError(id, message){
+  const input = document.getElementById(id);
+  const box = document.querySelector(`[data-error-for="${id}"]`);
+  if(input) input.classList.toggle('error', !!message);
+  if(box){
+    box.classList.toggle('show', !!message);
+    const span = box.querySelector('span:last-child');
+    if(span) span.textContent = message || '';
+  }
+}
+function clearErrors(scope){
+  (scope || document).querySelectorAll('.input').forEach(i => i.classList.remove('error'));
+  (scope || document).querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+}
+function showFormAlert(msg, type = 'danger'){
+  const box = $('#formAlert');
+  if(!box) return;
+  box.innerHTML = `<div class="alert alert-${type} mt-3">${icon(type==='danger'?'warning':'check','1.125rem')}<div>${esc(msg)}</div></div>`;
+  box.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+/* ============================================================================
+   ROTEADOR + EVENTOS
+   ============================================================================ */
+function parseHash(){
+  const raw = location.hash.replace(/^#/,'') || '/login';
+  const [path, qs] = raw.split('?');
+  return { path, params: new URLSearchParams(qs || '') };
+}
+async function handleRoute(){
+  const { path, params } = parseHash();
+  state.route = path; state.params = params;
+  const publicRoutes = ['/login','/cadastro','/recuperar'];
+  if(!session && !publicRoutes.includes(path)){ location.hash = '#/login'; return; }
+  if(session && (path === '/login' || path === '/cadastro')){ location.hash = '#/dashboard'; return; }
+  state.drawerOpen = false;
+  state.editingId = params.get('id') || null;
+  switch(path){
+    case '/login':        await viewLogin(); break;
+    case '/cadastro':     await viewRegister(); break;
+    case '/recuperar':    await viewRecover(); break;
+    case '/dashboard':    await viewDashboard(); break;
+    case '/agendamento':  await viewAppointment(); break;
+    case '/agendamentos': await viewAppointmentsList(); break;
+    case '/clientes':     await viewClients(); break;
+    case '/servicos':     await viewServices(); break;
+    default: location.hash = '#/dashboard';
+  }
+}
+
+async function onClick(e){
+  if(e.target.id === 'modalBackdrop'){ closeModal(); return; }
+  const el = e.target.closest('[data-action]');
+  if(!el) return;
+  const action = el.dataset.action;
+  const id = el.dataset.id;
+
+  switch(action){
+    /* --- acessibilidade --- */
+    case 'open-a11y-info':
+      openModal({
+        title: 'Acessibilidade',
+        body: `<p class="t-sm">O ProAgenda permite ajustar o tamanho das fontes com os botões <strong>A+</strong>, <strong>A−</strong> e <strong>A</strong> (padrão). A preferência é salva no navegador (localStorage) e mantida ao navegar entre as telas.</p>
+               <p class="t-sm mt-3">Todo o layout é construído com unidades <strong>rem</strong>, por isso a interface cresce de forma proporcional sem quebrar em telas pequenas. Todos os campos, botões e menus são acessíveis por teclado (Tab) e possuem rótulos descritivos.</p>`,
+        actions: `<button class="btn btn-primary" data-action="close-modal">Entendi</button>`
+      });
+      break;
+
+    /* --- autenticação --- */
+    case 'toggle-password': {
+      const input = document.getElementById(el.dataset.target);
+      if(!input) break;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      el.innerHTML = icon(show ? 'eyeOff' : 'eye', '1.125rem');
+      el.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+      break;
+    }
+    case 'social-login':
+      toast(`Login com ${el.dataset.provider} disponível na versão conectada ao back-end.`, 'warn');
+      break;
+    case 'resend-otp':
+      state.recover.countdown = 30;
+      startOtpCountdown();
+      toast('Novo código enviado para ' + state.recover.email + '.', 'success');
+      break;
+
+    /* --- shell --- */
+    case 'toggle-drawer':
+      state.drawerOpen = !state.drawerOpen;
+      $('#sidebar')?.classList.toggle('open', state.drawerOpen);
+      $('.drawer-backdrop')?.classList.toggle('show', state.drawerOpen);
+      break;
+    case 'close-drawer':
+      state.drawerOpen = false;
+      $('#sidebar')?.classList.remove('open');
+      $('.drawer-backdrop')?.classList.remove('show');
+      break;
+    case 'toggle-dropdown': {
+      const target = $(el.dataset.target);
+      if(!target) break;
+      const willOpen = target.hidden;
+      $$('.dropdown').forEach(d => d.hidden = true);
+      target.hidden = !willOpen;
+      el.setAttribute('aria-expanded', String(willOpen));
+      break;
+    }
+    case 'logout':
+      setSession(null);
+      state.search = '';
+      toast('Sessão encerrada. Até logo!', 'success');
+      location.hash = '#/login';
+      break;
+
+    /* --- dashboard --- */
+    case 'select-day':
+      state.selectedDay = el.dataset.date;
+      viewDashboard();
+      break;
+    case 'week-prev':
+      state.weekStart = addDays(state.weekStart, -7);
+      state.selectedDay = dateKey(state.weekStart);
+      viewDashboard();
+      break;
+    case 'week-next':
+      state.weekStart = addDays(state.weekStart, 7);
+      state.selectedDay = dateKey(state.weekStart);
+      viewDashboard();
+      break;
+    case 'week-today':
+      state.weekStart = startOfWeek(new Date());
+      state.selectedDay = dateKey(new Date());
+      viewDashboard();
+      break;
+    case 'toggle-appt-menu': {
+      const menu = el.parentElement.querySelector('.appt-menu');
+      const open = menu.hidden;
+      $$('.appt-menu').forEach(m => m.hidden = true);
+      menu.hidden = !open;
+      break;
+    }
+    case 'new-appointment': {
+      const q = new URLSearchParams();
+      if(el.dataset.date) q.set('data', el.dataset.date);
+      if(el.dataset.time) q.set('hora', el.dataset.time);
+      const target = '#/agendamento' + (q.toString() ? '?' + q.toString() : '');
+      if(location.hash === target){ state.editingId = null; state.params = q; await viewAppointment(); }
+      else location.hash = target;
+      break;
+    }
+    case 'edit-appointment':
+      location.hash = '#/agendamento?id=' + id;
+      break;
+    case 'cancel-appointment':
+      openCancelModal(id);
+      break;
+    case 'delete-appointment':
+      openDeleteModal(id);
+      break;
+    case 'confirm-delete-appt':
+      try{
+        await api.deleteAppt(id);
+        closeModal();
+        toast('Agendamento excluído permanentemente.', 'success');
+        await viewDashboard();
+      }catch(err){ toast(err.message || 'Não foi possível excluir.', 'error'); }
+      break;
+    case 'confirm-cancel-appt':
+      try{
+        await api.setApptStatus(id, 'cancelado');
+        closeModal();
+        toast('Agendamento cancelado. O horário está livre.', 'success');
+        await viewDashboard();
+      }catch(err){ toast(err.message || 'Não foi possível cancelar.', 'error'); }
+      break;
+
+    /* --- clientes / serviços --- */
+    case 'open-client-modal':  openClientModal(id); break;
+    case 'open-service-modal': openServiceModal(id); break;
+    case 'open-history':       openHistoryModal(id); break;
+    case 'close-modal':        closeModal(); break;
+    case 'delete-client': {
+      const c = DB.clients.find(x => x.id === id);
+      openModal({
+        title: 'Excluir cliente?',
+        body: `<div class="alert alert-danger">${icon('warning','1.125rem')}<div><p class="semi">Esta ação é irreversível.</p><p class="t-sm mt-1">O cadastro de <strong>${esc(c?.name||'cliente')}</strong> será removido. Agendamentos anteriores continuam no histórico.</p></div></div>`,
+        actions: `<button class="btn btn-outline" data-action="close-modal">Cancelar</button>
+                  <button class="btn btn-danger" data-action="confirm-delete-client" data-id="${id}">Excluir</button>`
+      });
+      break;
+    }
+    case 'confirm-delete-client':
+      try{
+        await api.deleteClient(id);
+        closeModal();
+        toast('Cliente excluído.', 'success');
+        await viewClients();
+      }catch(err){ toast(err.message || 'Não foi possível excluir.', 'error'); }
+      break;
+    case 'delete-service': {
+      const s = DB.services.find(x => x.id === id);
+      openModal({
+        title: 'Excluir serviço?',
+        body: `<div class="alert alert-danger">${icon('warning','1.125rem')}<div><p class="semi">Esta ação é irreversível.</p><p class="t-sm mt-1">O serviço <strong>${esc(s?.name||'')}</strong> será removido do catálogo. Serviços já utilizados em agendamentos não podem ser excluídos.</p></div></div>`,
+        actions: `<button class="btn btn-outline" data-action="close-modal">Cancelar</button>
+                  <button class="btn btn-danger" data-action="confirm-delete-service" data-id="${id}">Excluir</button>`
+      });
+      break;
+    }
+    case 'confirm-delete-service':
+      try{
+        await api.deleteService(id);
+        closeModal();
+        toast('Serviço excluído do catálogo.', 'success');
+        await viewServices();
+      }catch(err){ toast(err.message || 'Não foi possível excluir.', 'error'); }
+      break;
+
+    /* --- salvamento de modais --- */
+    case 'save-client': {
+      const form = $('#clientForm');
+      if(!form) break;
+      clearErrors(form);
+      const data = {
+        name: form.querySelector('#cf-nome').value.trim(),
+        phone: form.querySelector('#cf-telefone').value.trim(),
+        email: form.querySelector('#cf-email').value.trim(),
+        notes: form.querySelector('#cf-obs').value.trim()
+      };
+      let ok = true;
+      if(!validators.notEmpty(data.name)){ setFieldError('cf-nome','Informe o nome do cliente.'); ok = false; }
+      if(!validators.phone(data.phone)){ setFieldError('cf-telefone','Informe um telefone válido com DDD.'); ok = false; }
+      if(data.email && !validators.email(data.email)){ setFieldError('cf-email','E-mail inválido.'); ok = false; }
+      if(!ok) break;
+      try{
+        const formId = form.dataset.id;
+        if(formId){ await api.updateClient(formId, data); toast('Cliente atualizado com sucesso.', 'success'); }
+        else { await api.createClient(data); toast('Cliente cadastrado com sucesso.', 'success'); }
+        closeModal();
+        await viewClients();
+      }catch(err){ toast(err.message || 'Não foi possível salvar.', 'error'); }
+      break;
+    }
+    case 'save-service': {
+      const form = $('#serviceForm');
+      if(!form) break;
+      clearErrors(form);
+      const data = {
+        name: form.querySelector('#sf-nome').value.trim(),
+        category: form.querySelector('#sf-categoria').value,
+        duration: Number(form.querySelector('#sf-duracao').value),
+        price: parseMoney(form.querySelector('#sf-preco').value)
+      };
+      let ok = true;
+      if(!validators.notEmpty(data.name)){ setFieldError('sf-nome','Informe o nome do serviço.'); ok = false; }
+      if(!data.duration || data.duration < 15){ setFieldError('sf-duracao','Informe a duração em minutos.'); ok = false; }
+      if(data.price <= 0){ setFieldError('sf-preco','Informe o preço padrão.'); ok = false; }
+      if(!ok) break;
+      try{
+        const formId = form.dataset.id;
+        if(formId){ await api.updateService(formId, data); toast('Serviço atualizado.', 'success'); }
+        else { await api.createService(data); toast('Serviço cadastrado.', 'success'); }
+        closeModal();
+        await viewServices();
+      }catch(err){ toast(err.message || 'Não foi possível salvar.', 'error'); }
+      break;
+    }
+  }
+}
+
+function onInput(e){
+  const t = e.target;
+  /* máscaras dinâmicas */
+  if(t.dataset.mask === 'phone'){ const pos = t.selectionStart; t.value = maskPhone(t.value); if(pos) t.setSelectionRange(pos, pos); }
+  if(t.dataset.mask === 'money'){ t.value = maskMoney(t.value); }
+  /* busca global */
+  if(t.id === 'searchInput'){
+    state.search = t.value;
+    state.searchFocused = true;
+    updateSearchResults();
+    if(state.route === '/dashboard'){
+      const tl = $('#timeline');
+      if(tl) tl.innerHTML = timelineRowsHTML();
+    } else if(state.route === '/agendamentos'){
+      refreshAppointmentsTable();
+    }
+  }
+  /* busca de clientes */
+  if(t.id === 'clientSearch'){
+    state.clientQuery = t.value;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => refreshClientGrid(), 220);
+  }
+  /* OTP: foco automático para o próximo quadrado */
+  if(t.classList.contains('otp-input')){
+    const value = t.value.replace(/\D/g,'').slice(-1);
+    t.value = value;
+    if(value){
+      const idx = Number(t.id.replace('otp',''));
+      t.classList.add('filled');
+      const next = document.getElementById('otp' + (idx+1));
+      if(next) next.focus();
+      else { clearErrorOtp(); document.getElementById('otpForm')?.requestSubmit?.(); }
+    } else {
+      t.classList.remove('filled');
+    }
+  }
+}
+function clearErrorOtp(){
+  const box = $('#otpError');
+  if(box){ box.classList.remove('show'); }
+  $$('.otp-input').forEach(i => i.classList.remove('error'));
+}
+function onChange(e){
+  const t = e.target;
+  /* serviço selecionado → preenche duração e valor */
+  if(t.id === 'f-servico'){
+    const s = DB.services.find(x => x.id === t.value);
+    if(s){
+      const price = $('#f-valor');
+      if(price && !price.dataset.touched) price.value = maskMoney(s.price);
+      const start = $('#f-inicio'), end = $('#f-fim');
+      if(start && end && start.value){
+        const newEnd = fromMinutes(toMinutes(start.value) + Number(s.duration));
+        if(!end.value || toMinutes(end.value) <= toMinutes(start.value)) end.value = newEnd;
+      }
+    }
+  }
+  /* início alterado → recalcula término */
+  if(t.id === 'f-inicio'){
+    const s = DB.services.find(x => x.id === $('#f-servico')?.value);
+    const end = $('#f-fim');
+    if(s && end) end.value = fromMinutes(toMinutes(t.value) + Number(s.duration));
+  }
+  /* cliente digitado → completa dados cadastrados */
+  if(t.id === 'f-nome'){
+    const c = DB.clients.find(x => x.name.toLowerCase() === t.value.trim().toLowerCase());
+    if(c){
+      if(!$('#f-telefone').value) $('#f-telefone').value = c.phone;
+      if(!$('#f-email').value) $('#f-email').value = c.email || '';
+    }
+  }
+  if(t.id === 'f-valor') t.dataset.touched = '1';
+}
+async function onSubmit(e){
+  const form = e.target;
+  if(!form.id) return;
+  e.preventDefault();
+  clearErrors(form);
+
+  switch(form.id){
+    /* --- login --- */
+    case 'loginForm': {
+      const email = form.email.value.trim(), password = form.password.value;
+      let ok = true;
+      if(!email){ setFieldError('f-email','Informe seu e-mail.'); ok = false; }
+      else if(!validators.email(email)){ setFieldError('f-email','Digite um e-mail válido (ex.: nome@dominio.com).'); ok = false; }
+      if(!password){ setFieldError('f-senha','Informe sua senha.'); ok = false; }
+      if(!ok) return;
+      try{
+        const res = await api.login({ email, password });
+        setSession(res);
+        toast(`Bem-vindo(a), ${res.user.name.split(' ')[0]}!`, 'success');
+        location.hash = '#/dashboard';
+      }catch(err){
+        setFieldError('f-senha', err.message || 'Não foi possível entrar.');
+      }
+      break;
+    }
+    /* --- cadastro --- */
+    case 'registerForm': {
+      const data = { name:form.querySelector('#r-nome').value.trim(), email:form.querySelector('#r-email').value.trim(),
+                     phone:form.querySelector('#r-telefone').value.trim(),
+                     role:form.querySelector('#r-atividade').value, password:form.querySelector('#r-senha').value };
+      let ok = true;
+      if(!data.name){ setFieldError('r-nome','Informe seu nome completo.'); ok = false; }
+      if(!validators.email(data.email)){ setFieldError('r-email','Digite um e-mail válido.'); ok = false; }
+      if(!validators.password(data.password)){ setFieldError('r-senha','A senha deve ter no mínimo 6 caracteres.'); ok = false; }
+      if(!ok) return;
+      try{
+        const res = await api.register(data);
+        setSession(res);
+        toast('Conta criada! Bem-vindo ao ProAgenda.', 'success');
+        location.hash = '#/dashboard';
+      }catch(err){ toast(err.message || 'Não foi possível criar a conta.', 'error'); }
+      break;
+    }
+    /* --- recuperação: etapa 1 --- */
+    case 'recoverEmailForm': {
+      const email = form.querySelector('#c-email').value.trim();
+      if(!validators.email(email)){ setFieldError('c-email','Digite um e-mail válido.'); return; }
+      try{
+        const res = await api.requestResetCode({ email });
+        state.recover.email = email;
+        state.recover.step = 2;
+        toast(res.demoCode ? `Código enviado! (demo: ${res.demoCode})` : 'Código enviado por e-mail.', 'success');
+        await viewRecover();
+      }catch(err){ setFieldError('c-email', err.message || 'Não foi possível enviar o código.'); }
+      break;
+    }
+    /* --- recuperação: etapa 2 (OTP) --- */
+    case 'otpForm': {
+      const code = $$('.otp-input').map(i => i.value).join('');
+      const box = $('#otpError');
+      if(code.length < 4){
+        $$('.otp-input').forEach(i => i.classList.add('error'));
+        if(box){ box.classList.add('show'); box.querySelector('span:last-child').textContent = 'Digite os 4 dígitos do código.'; }
+        return;
+      }
+      try{
+        await api.verifyCode({ email: state.recover.email, code });
+        state.recover.code = code;
+        state.recover.step = 3;
+        clearInterval(state.recover.timer);
+        toast('Código confirmado! Defina a nova senha.', 'success');
+        await viewRecover();
+      }catch(err){
+        $$('.otp-input').forEach(i => i.classList.add('error'));
+        if(box){ box.classList.add('show'); box.querySelector('span:last-child').textContent = err.message || 'Código inválido.'; }
+      }
+      break;
+    }
+    /* --- recuperação: etapa 3 (nova senha) --- */
+    case 'resetPasswordForm': {
+      const pwd = form.querySelector('#n-senha').value, conf = form.querySelector('#n-confirma').value;
+      let ok = true;
+      if(!validators.password(pwd)){ setFieldError('n-senha','A senha deve ter no mínimo 6 caracteres.'); ok = false; }
+      if(pwd !== conf){ setFieldError('n-confirma','As senhas não conferem.'); ok = false; }
+      if(!ok) return;
+      try{
+        await api.resetPassword({ email: state.recover.email, password: pwd, confirmation: conf });
+        toast('Senha atualizada com sucesso. Faça login novamente.', 'success');
+        state.recover = { step:1, email:'', code:'', countdown:0, timer:null };
+        location.hash = '#/login';
+      }catch(err){ toast(err.message || 'Não foi possível salvar a senha.', 'error'); }
+      break;
+    }
+    /* --- agendamento (criar / editar) --- */
+    case 'appointmentForm': {
+      const data = {
+        clientName: form.clientName.value.trim(),
+        phone: form.phone.value.trim(),
+        email: form.email.value.trim(),
+        serviceId: form.serviceId.value,
+        date: form.date.value,
+        start: form.start.value,
+        end: form.end.value,
+        price: parseMoney(form.price.value),
+        notes: form.notes.value.trim()
+      };
+      let ok = true;
+      if(!data.clientName){ setFieldError('f-nome','Informe o nome do cliente.'); ok = false; }
+      if(!validators.phone(data.phone)){ setFieldError('f-telefone','Informe um telefone válido com DDD.'); ok = false; }
+      if(data.email && !validators.email(data.email)){ setFieldError('f-email','E-mail inválido.'); ok = false; }
+      if(!data.serviceId){ setFieldError('f-servico','Selecione o tipo de serviço.'); ok = false; }
+      if(!data.date){ setFieldError('f-data','Escolha a data do agendamento.'); ok = false; }
+      if(!data.start){ setFieldError('f-inicio','Informe o horário de início.'); ok = false; }
+      if(!data.end){ setFieldError('f-fim','Informe o horário de término.'); ok = false; }
+      else if(data.start && toMinutes(data.end) <= toMinutes(data.start)){ setFieldError('f-fim','O término deve ser depois do início.'); ok = false; }
+      if(data.price <= 0){ setFieldError('f-valor','Informe o valor a cobrar.'); ok = false; }
+      if(!ok){ showFormAlert('Revise os campos destacados para continuar.'); return; }
+      /* encontra/cria o cliente */
+      let client = DB.clients.find(c => c.name.toLowerCase() === data.clientName.toLowerCase());
+      if(!client){
+        client = await api.createClient({ name:data.clientName, phone:data.phone, email:data.email, notes:'Cadastrado via agendamento.' });
+      }
+      const payload = { ...data, clientId: client.id };
+      try{
+        if(state.editingId){
+          await api.updateAppt(state.editingId, payload);
+          toast('Agendamento atualizado com sucesso.', 'success');
+        }else{
+          await api.createAppt(payload);
+          toast('Agendamento criado com sucesso!', 'success');
+        }
+        state.selectedDay = data.date;
+        const ws = startOfWeek(parseKey(data.date));
+        state.weekStart = ws;
+        location.hash = '#/dashboard';
+      }catch(err){ showFormAlert(err.message || 'Não foi possível salvar o agendamento.', 'danger'); }
+      break;
+    }
+  }
+}
+function onKeydown(e){
+  /* OTP: backspace volta para o campo anterior */
+  if(e.target.classList.contains('otp-input') && e.key === 'Backspace' && !e.target.value){
+    const idx = Number(e.target.id.replace('otp',''));
+    const prev = document.getElementById('otp' + (idx-1));
+    if(prev){ prev.focus(); prev.value = ''; prev.classList.remove('filled'); }
+  }
+  /* Ctrl+K foca a busca */
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    $('#searchInput')?.focus();
+  }
+}
+
+/* ============================================================================
+   BOOT
+   ============================================================================ */
+initFontSize();
+document.addEventListener('click', onClick);
+document.addEventListener('input', onInput);
+document.addEventListener('change', onChange);
+document.addEventListener('submit', onSubmit);
+document.addEventListener('keydown', onKeydown);
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    closeModal();
+    $$('.appt-menu').forEach(m => m.hidden = true);
+    $$('.dropdown').forEach(d => d.hidden = true);
+  }
+});
+document.addEventListener('click', e => {
+  const bar = $('#a11yBar');
+  if(bar && !bar.contains(e.target)){
+    $$('.appt-menu').forEach(m => m.hidden = true);
+  }
+}, true);
+document.addEventListener('focusout', e => {
+  if(e.target.id === 'searchInput') state.searchFocused = false;
+});
+document.querySelectorAll('#a11yBar button[data-font]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const dir = btn.dataset.font;
+    if(dir === 'up') changeFontSize(1);
+    else if(dir === 'down') changeFontSize(-1);
+    else applyFontSize(16);
+  });
+});
+window.addEventListener('hashchange', handleRoute);
+handleRoute();
+</script>
+</body>
+</html>
