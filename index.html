@@ -499,8 +499,8 @@ function parseMoney(value){
       Implementa as rotas REST pedidas no relatório.
       Para produção basta definir API_BASE e USE_MOCK = false.
    --------------------------------------------------------------------------- */
-const API_BASE = '';                 // ex.: 'http://localhost:3000'
-const USE_MOCK  = true;              // false = usa fetch real
+const API_BASE = 'http://localhost:3000';
+const USE_MOCK  = false;
 const DB_KEY    = 'pa_db_v1';
 const SESSION_KEY = 'pa_session_v1';
 const FONT_KEY  = 'pa_font_size';
@@ -715,7 +715,6 @@ const mockServer = {
 
 /* --- Cliente HTTP (js/api.js) --- */
 async function apiRequest(method, path, body){
-  await delay(180 + Math.random()*220);           // latência simulada de rede
   if(!USE_MOCK){
     const res = await fetch(API_BASE + path, {
       method,
@@ -726,6 +725,7 @@ async function apiRequest(method, path, body){
     if(!res.ok) throw { status:res.status, message:data.message || 'Erro ao executar a operação.' };
     return data;
   }
+  await delay(180 + Math.random()*220);
   // roteamento do mock server (suporta /api/agendamentos/:id e /:id/status)
   const qIdx = path.indexOf('?');
   const rawPath = qIdx >= 0 ? path.slice(0, qIdx) : path;
@@ -761,6 +761,35 @@ const api = {
   updateService:    (id,b) => apiRequest('PUT','/api/servicos/'+id,b),
   deleteService:    (id) => apiRequest('DELETE','/api/servicos/'+id)
 };
+
+/* Catálogo usado pelas telas. No mock vem do localStorage; na API, é recarregado do backend. */
+const live = { clients: [], services: [], appointments: [] };
+function records(){ return USE_MOCK ? DB : live; }
+function sameId(a, b){ return String(a ?? '') !== '' && String(a) === String(b); }
+async function syncCatalog(){
+  if(USE_MOCK || !session?.token) return true;
+  try{
+    const [clients, services, appointments] = await Promise.all([
+      api.listClients(''),
+      api.listServices(),
+      api.listAppointments('', '')
+    ]);
+    live.clients = clients || [];
+    live.services = services || [];
+    live.appointments = appointments || [];
+    return true;
+  }catch(err){
+    if(err.status === 401){
+      setSession(null);
+      live.clients = []; live.services = []; live.appointments = [];
+      toast('Sessão expirada. Faça login novamente.', 'error');
+      location.hash = '#/login';
+      return false;
+    }
+    toast(err.message || 'Não foi possível carregar os dados.', 'error');
+    return true;
+  }
+}
 
 /* ---------------------------------------------------------------------------
    4) SESSÃO (js/auth.js)
@@ -877,10 +906,11 @@ const icon = (name, size = '1.125rem', cls = '') =>
 
 /* ---------- helpers de dados ---------- */
 function enrich(a){
+  const src = records();
   return {
     ...a,
-    client: DB.clients.find(c => c.id === a.clientId) || null,
-    service: DB.services.find(s => s.id === a.serviceId) || null
+    client: src.clients.find(c => sameId(c.id, a.clientId)) || a.client || null,
+    service: src.services.find(s => sameId(s.id, a.serviceId)) || a.service || null
   };
 }
 const HOURS = [7,8,9,10,11,12,13,14,15,16,17,18,19,20];
@@ -891,7 +921,7 @@ const DOW = ['Seg','Ter','Qua','Qui','Sex','Sáb'];
    ============================================================================ */
 function shell(active, content){
   const u = session?.user || { name:'Visitante', role:'' };
-  const badge = DB.appointments.filter(a => a.status !== 'cancelado').length;
+  const badge = records().appointments.filter(a => a.status !== 'cancelado').length;
   const navItem = (id, label, iconName, href, withBadge) => `
     <a class="nav-item ${active===id?'active':''}" href="${href}" ${active===id?'aria-current="page"':''}>
       <i>${icon(iconName,'1.125rem')}</i><span>${label}</span>
@@ -976,16 +1006,17 @@ function shell(active, content){
   </div>`;
 }
 function notifItems(){
+  const src = records();
   const today = dateKey(new Date());
-  const next = DB.appointments.filter(a => a.status!=='cancelado' && a.date >= today)
+  const next = src.appointments.filter(a => a.status!=='cancelado' && a.date >= today)
     .sort((a,b)=> (a.date+a.start).localeCompare(b.date+b.start))[0];
   const items = [];
   if(next){
-    const c = DB.clients.find(x => x.id === next.clientId);
-    items.push(`<div class="notif-item">${icon('clock','1rem')}<div><p class="t-sm semi">Próximo compromisso</p><p class="t-xs muted">${esc(c?c.name:'Cliente')} — ${fmtDateBR(next.date)} às ${esc(next.start)}</p></div></div>`);
+    const c = src.clients.find(x => sameId(x.id, next.clientId)) || next.client;
+    items.push(`<div class="notif-item">${icon('clock','1rem')}<div><p class="t-sm semi">Próximo compromisso</p><p class="t-xs muted">${esc(c?c.name:(next.clientName||'Cliente'))} — ${fmtDateBR(next.date)} às ${esc(next.start)}</p></div></div>`);
   }
-  items.push(`<div class="notif-item">${icon('money','1rem')}<div><p class="t-sm semi">${DB.appointments.filter(a=>a.status!=='cancelado').length} compromissos ativos</p><p class="t-xs muted">${DB.clients.length} clientes cadastrados na base</p></div></div>`);
-  items.push(`<div class="notif-item">${icon('tag','1rem')}<div><p class="t-sm semi">Catálogo atualizado</p><p class="t-xs muted">${DB.services.length} serviços disponíveis para agendamento</p></div></div>`);
+  items.push(`<div class="notif-item">${icon('money','1rem')}<div><p class="t-sm semi">${src.appointments.filter(a=>a.status!=='cancelado').length} compromissos ativos</p><p class="t-xs muted">${src.clients.length} clientes cadastrados na base</p></div></div>`);
+  items.push(`<div class="notif-item">${icon('tag','1rem')}<div><p class="t-sm semi">Catálogo atualizado</p><p class="t-xs muted">${src.services.length} serviços disponíveis para agendamento</p></div></div>`);
   return items.join('');
 }
 
@@ -1197,6 +1228,7 @@ async function viewRecover(){
    ============================================================================ */
 let weekData = [];
 async function viewDashboard(){
+  if(!(await syncCatalog())) return;
   const inicio = dateKey(state.weekStart);
   const fim = dateKey(addDays(state.weekStart,5));
   weekData = await api.listAppointments(inicio, fim);
@@ -1370,23 +1402,25 @@ function timelineRowsHTML(){
   }).join('');
 }
 function serviceOptions(selected){
-  return `<option value="">Selecione um serviço…</option>` + DB.services.map(s =>
-    `<option value="${s.id}" ${s.id===selected?'selected':''}>${esc(s.name)} — ${s.duration} min • ${fmtMoney(s.price)}</option>`).join('');
+  return `<option value="">Selecione um serviço…</option>` + records().services.map(s =>
+    `<option value="${s.id}" ${sameId(s.id, selected)?'selected':''}>${esc(s.name)} — ${s.duration} min • ${fmtMoney(s.price)}</option>`).join('');
 }
 function clientNames(){
-  return DB.clients.map(c => `<option value="${esc(c.name)}">`).join('');
+  return records().clients.map(c => `<option value="${esc(c.name)}">`).join('');
 }
 async function viewAppointment(){
+  if(!(await syncCatalog())) return;
+  const src = records();
   const id = state.params.get('id') || state.editingId;
-  const ap = id ? DB.appointments.find(a => a.id === id) : null;
+  const ap = id ? src.appointments.find(a => sameId(a.id, id)) : null;
   if(id && !ap){ toast('Agendamento não encontrado.', 'error'); location.hash = '#/dashboard'; return; }
   state.editingId = ap ? ap.id : null;
   const editing = !!ap;
   const date = ap ? ap.date : (state.params.get('data') || dateKey(new Date()));
   const start = ap ? ap.start : (state.params.get('hora') || '09:00');
-  const svc = ap ? DB.services.find(s => s.id === ap.serviceId) : null;
+  const svc = ap ? (src.services.find(s => sameId(s.id, ap.serviceId)) || ap.service) : null;
   const end = ap ? ap.end : fromMinutes(toMinutes(start) + (svc ? svc.duration : 60));
-  const c = ap ? DB.clients.find(x => x.id === ap.clientId) : null;
+  const c = ap ? (src.clients.find(x => sameId(x.id, ap.clientId)) || ap.client) : null;
   const clientName = ap ? (c?.name || ap.clientName || '') : '';
 
   const form = `
@@ -1523,6 +1557,7 @@ function appointmentRowsHTML(list){
             </td></tr>`).join('');
 }
 async function viewAppointmentsList(){
+  if(!(await syncCatalog())) return;
   const all = await api.listAppointments('', '');
   const q = state.search.trim().toLowerCase();
   const list = all.filter(a => !q || ((a.client?.name||a.clientName||'')+' '+(a.service?.name||'')+' '+(a.notes||'')).toLowerCase().includes(q))
@@ -1589,6 +1624,7 @@ function clientCardsHTML(clients){
       </article>`).join('');
 }
 async function viewClients(){
+  if(!(await syncCatalog())) return;
   const clients = await api.listClients(state.clientQuery);
   const content = `
   <div class="page-head">
@@ -1616,6 +1652,7 @@ async function refreshClientGrid(){
   if(count) count.textContent = `${clients.length} ${clients.length===1?'cliente cadastrado':'clientes cadastrados'}`;
 }
 async function viewServices(){
+  if(!(await syncCatalog())) return;
   const services = await api.listServices();
   const avgDuration = services.length ? Math.round(services.reduce((s,x)=>s+Number(x.duration||0),0)/services.length) : 0;
   const avgPrice = services.length ? services.reduce((s,x)=>s+Number(x.price||0),0)/services.length : 0;
@@ -1668,7 +1705,7 @@ async function viewServices(){
    MODAIS (cliente, serviço, histórico, confirmação de exclusão)
    ============================================================================ */
 function openClientModal(id){
-  const c = id ? DB.clients.find(x => x.id === id) : null;
+  const c = id ? records().clients.find(x => sameId(x.id, id)) : null;
   openModal({
     title: c ? 'Editar cliente' : 'Novo cliente',
     body: `<form id="clientForm" data-id="${c?c.id:''}" novalidate>
@@ -1697,7 +1734,7 @@ function openClientModal(id){
   });
 }
 function openServiceModal(id){
-  const s = id ? DB.services.find(x => x.id === id) : null;
+  const s = id ? records().services.find(x => sameId(x.id, id)) : null;
   openModal({
     title: s ? 'Editar serviço' : 'Novo serviço',
     body: `<form id="serviceForm" data-id="${s?s.id:''}" novalidate>
@@ -1730,8 +1767,9 @@ function openServiceModal(id){
   });
 }
 function openHistoryModal(id){
-  const c = DB.clients.find(x => x.id === id);
-  const aps = DB.appointments.filter(a => a.clientId === id).sort((a,b)=>(b.date+b.start).localeCompare(a.date+a.start));
+  const src = records();
+  const c = src.clients.find(x => sameId(x.id, id));
+  const aps = src.appointments.filter(a => sameId(a.clientId, id)).sort((a,b)=>(b.date+b.start).localeCompare(a.date+a.start));
   const spent = aps.filter(a=>a.status!=='cancelado').reduce((s,a)=>s+Number(a.price||0),0);
   openModal({
     title: `Histórico de ${c?.name||'cliente'}`,
@@ -1743,7 +1781,7 @@ function openHistoryModal(id){
           <tbody>${aps.map(a=>`<tr>
             <td class="nowrap">${fmtDateBR(a.date)}</td>
             <td class="nowrap">${esc(a.start)}–${esc(a.end)}</td>
-            <td>${esc(DB.services.find(s=>s.id===a.serviceId)?.name||'—')}</td>
+            <td>${esc(src.services.find(s=>sameId(s.id, a.serviceId))?.name || a.service?.name || '—')}</td>
             <td class="bold">${fmtMoney(a.price)}</td></tr>`).join('') || '<tr><td colspan="4"><div class="empty-state"><p class="t-sm">Nenhum atendimento registrado ainda.</p></div></td></tr>'}</tbody>
         </table>
       </div>`,
@@ -1752,8 +1790,9 @@ function openHistoryModal(id){
   });
 }
 function openDeleteModal(id){
-  const ap = DB.appointments.find(a => a.id === id);
-  const c = ap ? DB.clients.find(x => x.id === ap.clientId) : null;
+  const src = records();
+  const ap = src.appointments.find(a => sameId(a.id, id));
+  const c = ap ? (src.clients.find(x => sameId(x.id, ap.clientId)) || ap.client) : null;
   openModal({
     title: 'Excluir agendamento?',
     body: `<div class="alert alert-danger">${icon('warning','1.125rem')}
@@ -1764,8 +1803,9 @@ function openDeleteModal(id){
   });
 }
 function openCancelModal(id){
-  const ap = DB.appointments.find(a => a.id === id);
-  const c = ap ? DB.clients.find(x => x.id === ap.clientId) : null;
+  const src = records();
+  const ap = src.appointments.find(a => sameId(a.id, id));
+  const c = ap ? (src.clients.find(x => sameId(x.id, ap.clientId)) || ap.client) : null;
   openModal({
     title: 'Cancelar agendamento?',
     body: `<div class="alert alert-warning">${icon('warning','1.125rem')}
@@ -1789,7 +1829,7 @@ function updateSearchResults(){
   if(!box) return;
   const q = state.search.trim().toLowerCase();
   if(!q){ box.hidden = true; box.innerHTML = ''; return; }
-  const list = DB.appointments.map(enrich)
+  const list = records().appointments.map(enrich)
     .filter(a => ((a.client?.name||a.clientName||'')+' '+(a.service?.name||'')+' '+(a.notes||'')).toLowerCase().includes(q))
     .sort((a,b)=>(b.date+b.start).localeCompare(a.date+a.start)).slice(0,6);
   box.innerHTML = list.length ? list.map(a=>`
@@ -1904,9 +1944,12 @@ async function onClick(e){
       toast(`Login com ${el.dataset.provider} disponível na versão conectada ao back-end.`, 'warn');
       break;
     case 'resend-otp':
-      state.recover.countdown = 30;
-      startOtpCountdown();
-      toast('Novo código enviado para ' + state.recover.email + '.', 'success');
+      try{
+        const res = await api.requestResetCode({ email: state.recover.email });
+        state.recover.countdown = 30;
+        startOtpCountdown();
+        toast(res.demoCode ? `Código enviado! (demo: ${res.demoCode})` : 'Novo código enviado para ' + state.recover.email + '.', 'success');
+      }catch(err){ toast(err.message || 'Não foi possível reenviar o código.', 'error'); }
       break;
 
     /* --- shell --- */
@@ -1931,6 +1974,7 @@ async function onClick(e){
     }
     case 'logout':
       setSession(null);
+      live.clients = []; live.services = []; live.appointments = [];
       state.search = '';
       toast('Sessão encerrada. Até logo!', 'success');
       location.hash = '#/login';
@@ -2004,7 +2048,7 @@ async function onClick(e){
     case 'open-history':       openHistoryModal(id); break;
     case 'close-modal':        closeModal(); break;
     case 'delete-client': {
-      const c = DB.clients.find(x => x.id === id);
+      const c = records().clients.find(x => sameId(x.id, id));
       openModal({
         title: 'Excluir cliente?',
         body: `<div class="alert alert-danger">${icon('warning','1.125rem')}<div><p class="semi">Esta ação é irreversível.</p><p class="t-sm mt-1">O cadastro de <strong>${esc(c?.name||'cliente')}</strong> será removido. Agendamentos anteriores continuam no histórico.</p></div></div>`,
@@ -2022,7 +2066,7 @@ async function onClick(e){
       }catch(err){ toast(err.message || 'Não foi possível excluir.', 'error'); }
       break;
     case 'delete-service': {
-      const s = DB.services.find(x => x.id === id);
+      const s = records().services.find(x => sameId(x.id, id));
       openModal({
         title: 'Excluir serviço?',
         body: `<div class="alert alert-danger">${icon('warning','1.125rem')}<div><p class="semi">Esta ação é irreversível.</p><p class="t-sm mt-1">O serviço <strong>${esc(s?.name||'')}</strong> será removido do catálogo. Serviços já utilizados em agendamentos não podem ser excluídos.</p></div></div>`,
@@ -2139,7 +2183,7 @@ function onChange(e){
   const t = e.target;
   /* serviço selecionado → preenche duração e valor */
   if(t.id === 'f-servico'){
-    const s = DB.services.find(x => x.id === t.value);
+    const s = records().services.find(x => sameId(x.id, t.value));
     if(s){
       const price = $('#f-valor');
       if(price && !price.dataset.touched) price.value = maskMoney(s.price);
@@ -2152,13 +2196,13 @@ function onChange(e){
   }
   /* início alterado → recalcula término */
   if(t.id === 'f-inicio'){
-    const s = DB.services.find(x => x.id === $('#f-servico')?.value);
+    const s = records().services.find(x => sameId(x.id, $('#f-servico')?.value));
     const end = $('#f-fim');
     if(s && end) end.value = fromMinutes(toMinutes(t.value) + Number(s.duration));
   }
   /* cliente digitado → completa dados cadastrados */
   if(t.id === 'f-nome'){
-    const c = DB.clients.find(x => x.name.toLowerCase() === t.value.trim().toLowerCase());
+    const c = records().clients.find(x => x.name.toLowerCase() === t.value.trim().toLowerCase());
     if(c){
       if(!$('#f-telefone').value) $('#f-telefone').value = c.phone;
       if(!$('#f-email').value) $('#f-email').value = c.email || '';
@@ -2284,9 +2328,10 @@ async function onSubmit(e){
       if(data.price <= 0){ setFieldError('f-valor','Informe o valor a cobrar.'); ok = false; }
       if(!ok){ showFormAlert('Revise os campos destacados para continuar.'); return; }
       /* encontra/cria o cliente */
-      let client = DB.clients.find(c => c.name.toLowerCase() === data.clientName.toLowerCase());
+      let client = records().clients.find(c => c.name.toLowerCase() === data.clientName.toLowerCase());
       if(!client){
         client = await api.createClient({ name:data.clientName, phone:data.phone, email:data.email, notes:'Cadastrado via agendamento.' });
+        live.clients.push(client);
       }
       const payload = { ...data, clientId: client.id };
       try{
