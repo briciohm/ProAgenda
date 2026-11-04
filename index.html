@@ -1000,7 +1000,7 @@ function authAside(){
       <span class="brand-name" style="color:#fff">Pro<span style="color:#BFDBFE">Agenda</span></span>
     </a>
     <div>
-      <h1 class="auth-headline">Sua agenda organizada, do tattoo ao chuveiro.</h1>
+      <h1 class="auth-headline">Sua Agenda Organizada! Controle horários, clientes e receita.</h1>
       <p class="auth-sub">Controle horários, clientes e receita em um só lugar — simples, rápido e feito para quem trabalha sozinho.</p>
       <div class="auth-features">
         <div class="auth-feature"><i>${icon('calendar','1rem')}</i><span>Calendário semanal com horários livres e ocupados</span></div>
@@ -1763,6 +1763,19 @@ function openDeleteModal(id){
               <button class="btn btn-danger" data-action="confirm-delete-appt" data-id="${id}">${icon('trash','1rem')} Excluir</button>`
   });
 }
+/* Mantém o usuário no contexto após excluir/cancelar um compromisso */
+async function refreshAfterAppointmentChange(){
+  if(state.route === '/agendamentos'){
+    await viewAppointmentsList();
+    return;
+  }
+  if(state.route === '/agendamento'){
+    if(location.hash === '#/dashboard') await viewDashboard();
+    else location.hash = '#/dashboard';
+    return;
+  }
+  await viewDashboard();
+}
 function openCancelModal(id){
   const ap = DB.appointments.find(a => a.id === id);
   const c = ap ? DB.clients.find(x => x.id === ap.clientId) : null;
@@ -1986,7 +1999,7 @@ async function onClick(e){
         await api.deleteAppt(id);
         closeModal();
         toast('Agendamento excluído permanentemente.', 'success');
-        await viewDashboard();
+        await refreshAfterAppointmentChange();
       }catch(err){ toast(err.message || 'Não foi possível excluir.', 'error'); }
       break;
     case 'confirm-cancel-appt':
@@ -1994,7 +2007,7 @@ async function onClick(e){
         await api.setApptStatus(id, 'cancelado');
         closeModal();
         toast('Agendamento cancelado. O horário está livre.', 'success');
-        await viewDashboard();
+        await refreshAfterAppointmentChange();
       }catch(err){ toast(err.message || 'Não foi possível cancelar.', 'error'); }
       break;
 
